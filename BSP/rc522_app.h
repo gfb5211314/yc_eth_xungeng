@@ -148,13 +148,12 @@ uint8_t rc522_find_card(uint8_t * card_buf);
 #define MI_ERR                         (-2)
 
 
-//
 
 #define MAXRLEN           18
 
 
 
-uint8_t rc522_find_card();
+uint8_t rc522_find_card(uint8_t * card_buf);
 
 void test_rc522_init(void);
 

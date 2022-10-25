@@ -7,13 +7,13 @@
 typedef enum  {
 	   CONFIG=0, //配置模式
 	   DEV_NET_IN,  //入网模式
-	   WORKING   //工作模式
+	   WORKING  //工作模式
 		
 } System_State_Type;
 
 //声音
 typedef enum  {
-   MUTE_VOICE, //静音
+   MUTE_VOICE=0, //静音
 	 CLOCK_IN_SUCESS,  //打卡成功
 	 CARD_NUMBER_NOT_ENTER,//卡号没有录入 
 	 FINGER_SUCCESS_RECORDED,//指纹录入成功
@@ -34,4 +34,12 @@ typedef enum  {
    PLEASE_RECORD_FINGER_PRINT,		//请录入指纹
    FINGER_PRINT_RECORD_SUCCESS  //录入指纹成功	
 } System_Music_Type;
+//指纹操作
+//typedef enum  {
+//  
+//} System_Music_Type;
+
+extern System_Music_Type   System_Music;
+extern void Play_Music_Fun(void);
+extern void Talk_Process_Fun(void);
 #endif

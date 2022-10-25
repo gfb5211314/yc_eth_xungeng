@@ -48,7 +48,7 @@ void eth_send_string(uint8_t *p) {
 
 void send_string_to_eth(uint8_t *p,uint16_t plen)
 {
-	 HAL_UART_Transmit(&eth_usart, p,plen, 0xffff);
+	 HAL_UART_Transmit(&eth_usart, p,plen, 0xffffffff);
 	
 }
 //只可以用于AT命令发送，字符为0，没有问题! 数据里面有零都不行
@@ -108,9 +108,14 @@ uint8_t atk_eth_send_cmd(uint8_t *cmd,uint8_t *ack,uint32_t waittime)
 //开启DMA接收空闲中断
 void  ETH_DMA_START()
 {
-    HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData,100);  //不能启动打开
-    __HAL_UART_ENABLE_IT(&eth_usart, UART_IT_IDLE);
-//		HAL_UART_Receive_IT(&wifi_usart,ESP8266_temp.RX_pData,1);		// 重新使能串口2接收中断
+	   __HAL_UART_ENABLE_IT(&eth_usart, UART_IT_IDLE);
+     HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData,100);  //不能启动打开
+
+}
+void Eth_Init()
+{
+   ETH_Rst();
+   ETH_DMA_START();
 }
 //开启接收空闲中断
 void  ETH_UsartReceive_IDLE()
@@ -122,9 +127,9 @@ void  ETH_UsartReceive_IDLE()
         __HAL_UART_CLEAR_IDLEFLAG(&eth_usart);//
         HAL_UART_DMAStop(&eth_usart);	
         temp = eth_usart.hdmarx->Instance->CNDTR;//	
-          ether_st.RX_Size = data_len - temp;
+          ether_st.RX_Size = eth_data_len - temp;
         ether_st.RX_flag=1;
-       HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData, data_len);
+       HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData, eth_data_len);
     }
 }
 
@@ -284,6 +289,5 @@ void reset_ethdevinit()
 	 HAL_Delay(1000);
 	 HAL_Delay(1000);
 	
-	
-	
+
 }

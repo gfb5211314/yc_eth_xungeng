@@ -1,34 +1,39 @@
 #ifndef __AS608_H
 #define __AS608_H
 #include <stdio.h>
-#include "stm32L0xx_hal.h"
+#include "stm32l0xx_hal.h"
 #include "main.h"
 #include "usart.h"
+
+//#define  AS608_TX  
+//#define  AS608_RX
+
+#define  AS608_USART     hlpuart1
+
+
 typedef unsigned          char u8;
 typedef unsigned short     int u16;
 typedef unsigned      int u32;
 
 //#define zhiwen_jianche_GPIO_Port
 
-#define AS608_USART   hlpuart1
-#define PS_Sta     HAL_GPIO_ReadPin(Touch_Wkup_GPIO_Port, Touch_Wkup_Pin)//读指纹模块状态引脚
+#define PS_Sta     HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)//读指纹模块状态引脚
 //#define PS_Sta     1  //测试，后面注释掉
 #define CharBuffer1 0x01
 #define CharBuffer2 0x02
 
-#define  data_len  2048
+#define  data_len  1024
 
 typedef struct
 {
     uint8_t  RX_flag;           //IDLE receive flag
     uint16_t RX_Size;           //receive length
 	  uint16_t count;
-    uint16_t tem_RX_Size;       //receive length
     uint8_t  RX_pData[data_len];
+    uint8_t  TX_pData[data_len];
 }AS608_USART_TYPE;
-
-   extern   AS608_USART_TYPE         AS608_USART_ST;
-void  ETH_DMA_START();
+extern AS608_USART_TYPE  as608_usart_st;
+void  AS608_DMA_START(void);
 extern u32 AS608Addr;//模块地址
 
 typedef struct  
@@ -36,6 +41,26 @@ typedef struct
 	u16 pageID;//指纹ID
 	u16 mathscore;//匹配得分
 }SearchResult;
+
+#pragma pack(8)
+
+typedef struct  as608_data_head_s
+{
+	u16 u16Header;//数据头
+	u32 u32Addr;//地址
+	u8  u8Flag;//标识
+	u16 u16Length;//数据长度
+}AS608_DATA_HEAD_S;
+
+typedef struct  as608_data_s
+{
+    AS608_DATA_HEAD_S stHeader;
+	u8  *pData;
+    u16 u16CheckSum;//校验
+}AS608_DATA_S;
+
+#pragma pack()
+
 
 typedef struct
 {

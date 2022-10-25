@@ -9,7 +9,7 @@
 
 
 extern uint8_t sn_code[12];
-void process_usart_data();
+void process_usart_data(void);
 void Flash_Write_Num_Word(uint32_t WriteAddr, uint32_t * pBuffer, uint32_t NumToWrite )
 {
 	uint32_t PAGEError = 0;
@@ -88,7 +88,7 @@ uint32_t factory=0;
 void Init_Dev_Param()
 {
 	
-	Flash_Read_Word( ADDR_FLASH_PAGE_511, (uint32_t *)factory,1) ;
+	Flash_Read_Word( ADDR_FLASH_PAGE_511, (uint32_t *)&factory,1) ;
 	Flash_Read_Word( ADDR_FLASH_PAGE_512, (uint32_t *)sn_code,3 ) ;
 	    while(factory!=1)
 			{
@@ -128,7 +128,7 @@ void process_usart_data()
 		{
 			
            factory=1;			
-			Flash_Write_Num_Word(ADDR_FLASH_PAGE_512,(uint32_t *) factory, 1 );
+			Flash_Write_Num_Word(ADDR_FLASH_PAGE_512,(uint32_t *)&factory, 1 );
 			send_string_to_eth(ether_st.RX_pData,ether_st.RX_Size);
 		}
 		ether_st.RX_flag=0;

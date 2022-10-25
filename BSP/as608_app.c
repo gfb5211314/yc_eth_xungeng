@@ -19,7 +19,9 @@ void AS608_load_keyboard(u16 x,u16 y,u8 **kbtbl);//
 u8  AS608_get_keynum(u16 x,u16 y);//
 //u16 GET_NUM(void);//
 //从传感器获取指纹并生成特征然后上传给上位机
-
+uint32_t  as608_addr=0;
+SysPara AS608_sy_param;
+uint16_t zhiwen_vailed;
 //打开指纹电源
 void open_zhiwen_vol()
 {
@@ -33,11 +35,21 @@ void close_zhiwen_vol()
 	 HAL_GPIO_WritePin(Touch_Pwr_GPIO_Port, Touch_Pwr_Pin, GPIO_PIN_SET);
 	
 }
+void AS608_Init()
+{
+	open_zhiwen_vol();//打开电源
+	HAL_Delay(1000);
+	AS608_DMA_START();//打开串口接收数据
+	if(PS_HandShake(&as608_addr)) printf("握手失败\r\n");//与模块握手
+	
+	PS_ReadSysPara(&AS608_sy_param);//获取系统参数
+	PS_ValidTempleteNum(&zhiwen_vailed);
+}
 //函数功能：完成两次录入指纹并生成特征模板存于Buffer1和Buffer2
 void Create_FR_Char(void)
 {
 	uint8_t i,ensure ,processnum=0;
-	uint16_t ID_NUM=0;
+	//uint16_t ID_NUM=0;
 	while(1)
 	{
 		switch (processnum)
@@ -97,95 +109,16 @@ void Create_FR_Char(void)
 			break;
 	}		
 }
-void  zhiwen_data_to_computer()
-{
-	         static uint8_t  text_zhiwen=0;
-	  
-	   switch(text_zhiwen)
-		 {
-			 
-			 	case 0 :  
-				 Create_FR_Char();
-				       text_zhiwen=5;   
-				break;
-//				 if(PS_GetImage()==0) 
-//			 {
-//				     printf("获取手指成功\r\n");
-//				      text_zhiwen=1;
-//				 
-//			 }
-//			 break;
-//       	case 1 :  
-//			
-//				 if(PS_GenChar(CharBuffer1)==0) 
-//			 {
-//				    printf("指纹正确\r\n");//指纹正确
-//				 text_zhiwen=2;
-//				 
-//			 }
-//			 break;          
-//			 case 2 : 
 
-//				 if(PS_GetImage()==0) 
-//			 {
-//				     printf("获取手指成功\r\n");
-//				      text_zhiwen=3;
-//			 }  break;
-//   	case 3 :  
-//			
-//				 if(PS_GenChar(CharBuffer2)==0) 
-//			 {
-//				    printf("指纹正确\r\n");//指纹正确
-//				 text_zhiwen=4;
-//				 
-//			 }
-//			 break; 
-//			   	case 4 : 
-//						
-//					
-//		
-//				if(PS_RegModel()==0x00) 
-//				{
-//							 text_zhiwen=5;
-//				}
-//				break;
-					case 5 : 
-				   if(PS_UpChar(CharBuffer1)==0) 
-			    {
-				     printf("开始接收数据\r\n");
-				   text_zhiwen=6;
-				 
-			    }
-			 break;
-			 case 6 :  
-//      printf("接收数据\r\n");
-			 if(AS608_USART_ST.RX_flag==1)//接收到一次数据
-				        {
-									printf("<ether_st.RX_Size=%d\r\n",AS608_USART_ST.RX_Size);
-									   for(uint16_t i=0;i<AS608_USART_ST.RX_Size;i++)
-									{
-										
-										  printf("ether_st.RX_pData[%d]=%02x\r\n",i,AS608_USART_ST.RX_pData[i]);
-										AS608_USART_ST.RX_flag=0;
-									}
-									
-								}
-			 
-			 
-			 
-		 }
-	
-	
-	
-	
-}
 void open_pwr_zhiwen()
 {
 	
 	  HAL_GPIO_WritePin(GPIOC, Touch_Pwr_Pin, GPIO_PIN_SET);
 	
 }
-uint8_t speak_voe=0;
+static uint8_t zhiwen_test_buf[1024];
+uint16_t zhiwen_test_len;
+uint8_t  export_out_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength);
 //录指纹
 uint8_t Add_FR(uint16_t shouid)
 {
@@ -198,23 +131,13 @@ uint8_t Add_FR(uint16_t shouid)
 		{
 			case 0:
 				i++;
-			      if(speak_voe==0)
-						{  
-							  Line_1A_WT588S(19);//
-		              HAL_Delay(2000);
-			          Line_1A_WT588S(14);//开始录入指纹第一次
-		            HAL_Delay(2000);
-						  	speak_voe=1;
-						}
-				//printf("请按手指\r\n");//请按手指
 				ensure=PS_GetImage();
 				if(ensure==0x00) 
 				{
+						printf("获取指纹\r\n");	;//输入ID并按“Enter”保存
 					ensure=PS_GenChar(CharBuffer1);//生成特征
 					if(ensure==0x00)
 					{
-					   speak_voe=0;
-					//	printf("指纹正确/r/n");//指纹正确
 						i=0;
 						processnum=1;//跳到第二步						
 					}else ShowErrMessage(ensure);				
@@ -223,21 +146,12 @@ uint8_t Add_FR(uint16_t shouid)
 			
 			case 1:
 				i++;
-			   if(speak_voe==0)
-						{
-			       Line_1A_WT588S(15);//开始录入指纹第二次
-		            HAL_Delay(2000);
-						  	speak_voe=1;
-						}
-		//	printf("请再按一次手指\r\n")	;//再按一次手指
 				ensure=PS_GetImage();
 				if(ensure==0x00) 
 				{
 					ensure=PS_GenChar(CharBuffer2);//生成特征			
 					if(ensure==0x00)
-					{
-					       speak_voe=0;
-						//	printf("指纹正确/r/n");//指纹正确
+					{					 
 						i=0;
 						processnum=2;//跳到第三步
 					}else ShowErrMessage(ensure);	
@@ -246,19 +160,15 @@ uint8_t Add_FR(uint16_t shouid)
 
 			case 2:
 				
-				//	printf("对比2次指纹/r/n");//对比两次指纹
 				ensure=PS_Match();
 				if(ensure==0x00) 
 				{
 			
-				//	printf("2次指纹一样的/r/n");//两次指纹是一样的
+			
 					processnum=3;//跳到第四步
 				}
 				else 
 				{
-					 speak_voe=0;
-					  Line_1A_WT588S(6);//
-		        HAL_Delay(1000);
 			//	printf("对比失败,请重新按手指/r/n");//对比失败，请重新按手指
 					ShowErrMessage(ensure);
 					i=0;
@@ -284,20 +194,24 @@ uint8_t Add_FR(uint16_t shouid)
 				printf("请输入ID\r\n");	;//输入ID并按“Enter”保存
 				printf("0=< ID <=299\r\n");	
 				do
-//        			ID=GET_NUM();
 				ID=shouid;
 				while(!(ID<300));//输入DI必须小于300
 				ensure=PS_StoreChar(CharBuffer2,ID);//储存模板
 				if(ensure==0x00) 
 				{			
-					     sate=1;
-							  Line_1A_WT588S(20);//录入指纹成功
-		            HAL_Delay(1500);		
+					      sate=1;
+							//  Line_1A_WT588S(20);//录入指纹成功
+		         //   HAL_Delay(1500);		
 					//	printf("添加指纹成功/r/n");//添加指纹成功
 					PS_ValidTempleteNum(&ValidN);//读库指纹个数
-			//		printf("剩余指纹个数:%d\r\n"	,AS608Para.PS_max-ValidN);//显示剩余指纹个数
+			printf("剩余指纹个数:%d\r\n"	,AS608Para.PS_max-ValidN);//显示剩余指纹个数
 //					HAL_Delay(1500);//延时后清除显示	
-				
+//				    export_out_FR(1,zhiwen_test_buf,&zhiwen_test_len);
+					printf("zhiwen_test_len=%d\r\n",zhiwen_test_len);
+					for(uint16_t i=0;i<zhiwen_test_len;i++)
+					{
+				//	printf("zhiwen_test_buf[%d]=%d\r\n",i,zhiwen_test_buf[i]);
+					}
 				return sate;
 				}else {processnum=0;ShowErrMessage(ensure);}					
 				break;				
@@ -408,3 +322,31 @@ void Del_FR(void)
 
 //指纹特征上传
 
+//导出指纹
+uint8_t  export_out_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength)
+{
+
+   u8 u8Ret;
+   u8Ret=PS_UpChar(u16Fgid,pFgchar,pLength);
+   /*
+   if(ensure==0x00){//该is的特征存在
+   }else{
+    }
+*/
+	return 0;
+}
+
+//导入指纹
+uint8_t  export_in_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength)
+{
+
+   u8 u8Ret;
+   u8Ret=PS_DownChar(u16Fgid,pFgchar,pLength);
+   /*
+   if(ensure==0x00){//该is的特征存在
+   }else{
+    }
+*/
+	return 0;
+
+}

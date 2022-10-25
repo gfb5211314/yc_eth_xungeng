@@ -29,6 +29,8 @@ gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_iwdg.h
 gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr.h
 gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr_ex.h
 gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_spi.h
+gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim.h
+gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h
 gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h
 gateway\main.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 gateway\main.o: ../Inc/dma.h
@@ -44,3 +46,5 @@ gateway\main.o: ../Src/main_app.h
 gateway\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 gateway\main.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 gateway\main.o: ..\BSP\stm_flash.h
+gateway\main.o: ..\BSP\u_init.h
+gateway\main.o: ..\BSP\net_com.h

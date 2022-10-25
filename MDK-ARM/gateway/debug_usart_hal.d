@@ -31,6 +31,8 @@ gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_iwd
 gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr.h
 gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr_ex.h
 gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_spi.h
+gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim.h
+gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h
 gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h
 gateway\debug_usart_hal.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 gateway\debug_usart_hal.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h

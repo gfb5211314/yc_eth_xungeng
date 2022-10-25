@@ -690,7 +690,7 @@ void WaitCardOff(void)
 				}
 			}
 		}
-		HAL_Delay(100);
+		HAL_Delay(10);
 	}
 }
 char M500PcdConfigISOType(unsigned char type)
@@ -742,8 +742,10 @@ char M500PcdConfigISOType(unsigned char type)
 
     return MI_OK;
 }
-void test_rc522_init()
-{
+void open_fird_vol();
+void Rc522_Init()
+{  
+	  open_fird_vol(); //打开射频电源供电
     PcdReset();
     PcdAntennaOff();
     PcdAntennaOn();
@@ -755,7 +757,7 @@ unsigned char  SelectedSnr[4]; //卡号
 unsigned char DefaultKey[6] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}; //密钥
 unsigned char snr;
 unsigned char buf[16];  //FRID数据
-unsigned char RFID1[16]={0x88,0x34,0x56,0x78,0x00,0x00,0xff,0x07,0x80,0x29,0xff,0xff,0xff,0xff,0xff,0xfe};
+unsigned char RFID1[16]={0x88,0x34,0x56,0x78,0x00,0x00,0xff,0x07,0x80,0x29,0xff,0xff,0xff,0xff,0xff,0x66};
 //打开射频电压
 void open_fird_vol()
 {
@@ -779,15 +781,15 @@ uint8_t rc522_find_card(uint8_t * card_buf)
 			
 					   if((TagType[0]==0x04)&&(TagType[1]==0x00))
         {
-          //  printf("卡的类型:S50\r\n");
+            printf("卡的类型:S50\r\n");
         }
         else if((TagType[0]==0x02)&&(TagType[1]==0x00))
         {
-           // printf("卡的类型:S70\r\n");
+            printf("卡的类型:S70\r\n");
         }
         else if((TagType[0]==0x08)&&(TagType[1]==0x00))
         {
-          //  printf("卡的类型:X\r\n");
+            printf("卡的类型:X\r\n");
         }
 			//防冲撞
 			status = PcdAnticoll(SelectedSnr);
@@ -813,20 +815,20 @@ uint8_t rc522_find_card(uint8_t * card_buf)
 						if(!status)
 						{
 							
-							status = PcdWrite((snr*4+0), RFID1);  // 写卡，将buf[0]-buf[16]写入1扇区0块
+					//		status = PcdWrite((snr*4+0), RFID1);  // 写卡，将buf[0]-buf[16]写入1扇区0块
 							status = PcdRead((snr*4+0), buf);  // 读卡，读取1扇区0块数据到buf[0]-buf[16] 
 							if(!status)
 							{
 								temp=1;
 								//读写成功，点亮LED
 							//	  printf("读出的数据\r\n");
-								for(uint8_t i=0;i<4;i++)
+								for(uint8_t i=0;i<16;i++)
 								{
-							   	card_buf[i]=buf[i];
-	           //     printf("%02x",buf[i]);
+							   	card_buf[i]=buf[i];  //读取16个卡号
+	               printf("%02x",buf[i]);
 								}
-								//WaitCardOff();  //等待卡离开，可要可不要
-								status  =PcdHalt();
+								WaitCardOff();  //等待卡离开，可要可不要
+							//	status  =PcdHalt(); //不休眠
 										if(!status)
 							{
 					//			printf("进入休眠\r\n");
@@ -842,11 +844,7 @@ uint8_t rc522_find_card(uint8_t * card_buf)
 		}
 		else
 		{
-//			if(read_music_pin()==1)
-//			{
-////			play_music(0x11);
-//			}
-//			  printf("没有卡片\r\n");
+
 			temp=0;
 		}
 		return temp;

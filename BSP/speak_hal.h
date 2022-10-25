@@ -2,7 +2,7 @@
 #define __SPEAK_APP__H_
 #include "main.h"
 #include "GPIO.h"
-void Line_1A_WT588S(uint8_t DDATA);
+
 #define  speak_busy_GPIO_Port  WT_BUSY_GPIO_Port
 
 #define   SPEAK_BUSY_PIN   WT_BUSY_Pin
@@ -14,5 +14,7 @@ void Line_1A_WT588S(uint8_t DDATA);
 
 #define   SPEAK_DATA_PIN                 WT_DAT_Pin
 #define   SPEAK_DATA_PORT                WT_DAT_GPIO_Port
+extern void Line_1A_WT588S(uint8_t DDATA);
+extern void Play_Music_Fun(void);
 #endif
 

@@ -58,6 +58,8 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define TP_WKUP_Pin GPIO_PIN_13
+#define TP_WKUP_GPIO_Port GPIOC
 #define RFID_RST_Pin GPIO_PIN_14
 #define RFID_RST_GPIO_Port GPIOC
 #define RF_POW_EN_Pin GPIO_PIN_0
@@ -76,7 +78,7 @@ void Error_Handler(void);
 #define iic_scl_GPIO_Port GPIOB
 #define iic_sda_Pin GPIO_PIN_14
 #define iic_sda_GPIO_Port GPIOB
-#define WT_DAT_Pin GPIO_PIN_8
+#define WT_DAT_Pin GPIO_PIN_12
 #define WT_DAT_GPIO_Port GPIOA
 #define debug_tx_Pin GPIO_PIN_9
 #define debug_tx_GPIO_Port GPIOA
@@ -84,7 +86,7 @@ void Error_Handler(void);
 #define debug_rx_GPIO_Port GPIOA
 #define WT_LCK_Pin GPIO_PIN_11
 #define WT_LCK_GPIO_Port GPIOA
-#define WT_BUSY_Pin GPIO_PIN_12
+#define WT_BUSY_Pin GPIO_PIN_8
 #define WT_BUSY_GPIO_Port GPIOA
 #define eth_at_Pin GPIO_PIN_3
 #define eth_at_GPIO_Port GPIOB

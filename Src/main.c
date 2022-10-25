@@ -35,6 +35,8 @@
 #include "stdio.h"
 #include "string.h"
 #include "stm_flash.h"
+#include "u_init.h"
+#include "net_com.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,7 +50,16 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+uint32_t system_tick=0;
+void System_Tick_Count()
+{
+	if(uwTick)
+		{
+			uwTick--;
+			system_tick++;
+			
+		}
+}
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -59,7 +70,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_NVIC_Init(void);
+//static void MX_NVIC_Init(void);
 /* USER CODE BEGIN PFP */
 uint32_t gate_way_ip[1];
 uint32_t gate_waytem_ip[1];
@@ -80,6 +91,7 @@ extern uint8_t  Remote_eth_port[30];
 extern uint8_t product_key[30];
  uint32_t u32_product_key[2]={0};
 
+ 
 //test
 //uint32_t  u32_product_key[2]={0x12345678,0x87654321};
 //将4个字节转换成U32位
@@ -162,57 +174,28 @@ void eth_set_parameter()
 	 
  }
 /* USER CODE END 0 */
-void delay_us(uint32_t times)
-{
-	while(times--);
-}
+
 /**
   * @brief  The application entry point.
   * @retval int
   */
 int main(void)
 {
-  /* USER CODE BEGIN 1 */
-
-  /* USER CODE END 1 */
-
-  /* MCU Configuration--------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
-
-  /* USER CODE BEGIN Init */
-
-  /* USER CODE END Init */
-
-  /* Configure the system clock */
-  SystemClock_Config();
-
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_SPI1_Init();
-  MX_USART1_UART_Init();
-  MX_USART2_UART_Init();
-  MX_IWDG_Init();
-  MX_LPUART1_UART_Init();
-
-  /* Initialize interrupts */
-  MX_NVIC_Init();
-  /* USER CODE BEGIN 2 */
-
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+  Bsp_Driver_Init();
+	User_Driver_Init();
   while (1)
   {
     /* USER CODE END WHILE */
-    
+  // Add_FR(1);
     /* USER CODE BEGIN 3 */
-			
+	
+		if(system_tick%1==0)  Play_Music_Fun();     //播放音乐
+		if(system_tick%100==0)  Eth_business_Cammand_Task();  //业务发送命令函数  与服务器通信	
+		if(system_tick%10==2)  Eth_Updata_Finger_Cammand_Task();  //与指纹通信		
+   	if(system_tick%10==5)    Eth_Com_Data_Process(); //与服务器通信
+		if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
+	  if((system_tick%1000)==1)  Time_out_Ack_fun();
+  	 System_Tick_Count();
 
   }
   /* USER CODE END 3 */
@@ -275,7 +258,7 @@ void SystemClock_Config(void)
   * @brief NVIC Configuration.
   * @retval None
   */
-static void MX_NVIC_Init(void)
+ void MX_NVIC_Init(void)
 {
   /* LPUART1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(LPUART1_IRQn, 0, 0);
@@ -289,11 +272,35 @@ static void MX_NVIC_Init(void)
   /* DMA1_Channel2_3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
+  /* DMA1_Channel4_5_6_7_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+ /**
+  * @brief  Period elapsed callback in non blocking mode
+  * @note   This function is called  when TIM2 interrupt took place, inside
+  * HAL_TIM_IRQHandler(). It makes a direct call to HAL_IncTick() to increment
+  * a global variable "uwTick" used as application time base.
+  * @param  htim : TIM handle
+  * @retval None
+  */
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+  /* USER CODE BEGIN Callback 0 */
+
+  /* USER CODE END Callback 0 */
+  if (htim->Instance == TIM2) {
+      HAL_IncTick();
+  }
+  /* USER CODE BEGIN Callback 1 */
+
+  /* USER CODE END Callback 1 */
+}
 
 /**
   * @brief  This function is executed in case of error occurrence.

@@ -1,5 +1,5 @@
 gateway\as608.o: ..\BSP\as608.c
-gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32L0xx_hal.h
+gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h
 gateway\as608.o: ../Inc/stm32l0xx_hal_conf.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_rcc.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_def.h
@@ -28,6 +28,8 @@ gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_iwdg.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_pwr_ex.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_spi.h
+gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim.h
+gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h
 gateway\as608.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 gateway\as608.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

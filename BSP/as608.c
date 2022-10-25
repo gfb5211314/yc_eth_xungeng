@@ -1,22 +1,41 @@
-#include "stm32L0xx_hal.h"
+#include "stm32l0xx_hal.h"
 #include <string.h>
 #include "stdio.h"
 #include "as608.h"
 #include "main.h"
 #include "gpio.h"
-#include "usart.h"
-u32 AS608Addr = 0XFFFFFFFF; //默认
 
-AS608_USART_TYPE AS608_USART_ST;
+u32 AS608Addr = 0XFFFFFFFF; //默认
+extern UART_HandleTypeDef huart1;
+extern UART_HandleTypeDef huart2;
+extern DMA_HandleTypeDef hdma_usart2_rx;
+
+
+
+
+AS608_USART_TYPE  as608_usart_st;
+
+static void AS608_DebugPrintf(u8 *pData,u16 u16Size)
+{
+    for(uint16_t i=0;i<u16Size;i++)
+    {
+         
+    printf("\r\n");
+    printf("%03d 0x%02X",i,pData[i]);
+    printf("\r\n");
+                    
+    }
+}
+
 //开启DMA接收空闲中断
 void  AS608_DMA_START()
 {
-   HAL_UART_Receive_DMA(&AS608_USART,(uint8_t *)AS608_USART_ST.RX_pData, 50);  //不能启动打开
-    __HAL_UART_ENABLE_IT(&AS608_USART, UART_IT_IDLE);
-//		HAL_UART_Receive_IT(&wifi_usart,ESP8266_temp.RX_pData,1);		// 重新使能串口2接收中断
+	    __HAL_UART_ENABLE_IT(&AS608_USART, UART_IT_IDLE);
+   HAL_UART_Receive_DMA(&AS608_USART,(uint8_t *)as608_usart_st.RX_pData, 50);  //不能启动打开
+
 }
 //开启接收空闲中断
-void  AS608_UsartReceive_IDLE()
+static void  As608_UsartReceive_IDLE()
 {
     uint32_t temp=0;
     if((__HAL_UART_GET_FLAG(&AS608_USART,UART_FLAG_IDLE) != RESET))
@@ -25,21 +44,20 @@ void  AS608_UsartReceive_IDLE()
         __HAL_UART_CLEAR_IDLEFLAG(&AS608_USART);
         HAL_UART_DMAStop(&AS608_USART);
         temp = AS608_USART.hdmarx->Instance->CNDTR;//	
-          AS608_USART_ST.RX_Size = data_len - temp;
-        AS608_USART_ST.RX_flag=1;
-       HAL_UART_Receive_DMA(&AS608_USART,(uint8_t *)AS608_USART_ST.RX_pData, data_len);
+          as608_usart_st.RX_Size = data_len - temp;
+        as608_usart_st.RX_flag=1;
+       HAL_UART_Receive_DMA(&AS608_USART,(uint8_t *)as608_usart_st.RX_pData, data_len);
     }
 }
-
-//
 
 void LPUART1_IRQHandler(void)
 {
   /* USER CODE BEGIN LPUART1_IRQn 0 */
-     AS608_UsartReceive_IDLE();
+    As608_UsartReceive_IDLE();
   /* USER CODE END LPUART1_IRQn 0 */
   HAL_UART_IRQHandler(&hlpuart1);
   /* USER CODE BEGIN LPUART1_IRQn 1 */
+
   /* USER CODE END LPUART1_IRQn 1 */
 }
 //初始化PA6为下拉输入		    
@@ -91,12 +109,44 @@ static void Sendcmd(u8 cmd)
 {
 	MYUSART_SendData(cmd);
 }
+//发送数据
+static void Senddata(u8 data)
+{
+	MYUSART_SendData(data);
+}
+
 //发送校验和
 static void SendCheck(u16 check)
 {
 	MYUSART_SendData(check>>8);  //发送高8位
 	MYUSART_SendData(check);    //发送低8位
 }
+
+//u8Type 8 结束包  2 传输包
+static void SendLengthData(u8 u8Type,u8 *pData,u16 u16Len)
+{
+
+    u16 i;
+    u16 u16CheckSum=0;
+    
+	SendHead();
+	SendAddr();
+	SendFlag(u8Type);//命令包标识
+	SendLength(u16Len+2); //加上校验码
+    
+    for(i=0;i<u16Len;i++){
+       Senddata(pData[i]);
+       u16CheckSum=u16CheckSum+pData[i];
+    }
+
+    u16CheckSum = u8Type+u16Len+2+u16CheckSum;
+    printf("u8Type 0x%02X u16Len %d u16CheckSum 0x%04X\r\n",u8Type,u16Len,u16CheckSum);
+    SendCheck(u16CheckSum);
+
+
+}
+
+
 //判断中断接收的数组有没有应答包
 //waittime为等待中断接收数据的时间（单位1ms）
 //返回值：数据包首地址
@@ -107,28 +157,47 @@ static u8 *JudgeStr(u16 waittime)
 	str[0]=0xef;str[1]=0x01;str[2]=AS608Addr>>24;
 	str[3]=AS608Addr>>16;str[4]=AS608Addr>>8;
 	str[5]=AS608Addr;str[6]=0x07;str[7]='\0';
-	 AS608_USART_ST.RX_flag=0;
+	 as608_usart_st.RX_flag=0;
 	while(--waittime)
 	{
 		HAL_Delay(1);
-		if(AS608_USART_ST.RX_flag==1)//接收到一次数据
+		if(as608_usart_st.RX_flag==1)//接收到一次数据
 		{
-			AS608_USART_ST.RX_flag=0;
-//			 for(uint16_t i=0;i<ether_st.RX_Size;i++)
-//			{
-//				 
-//			
-//										  printf("ether_st.RX_pData[%d]=%d",i,ether_st.RX_pData[i]);
-//										ether_st.RX_flag=0;
-//							
-//			}
-			data=strstr((const char*)AS608_USART_ST.RX_pData,(const char*)str);
+			as608_usart_st.RX_flag=0;
+            #if 0
+			 for(uint16_t i=0;i<ether_st.RX_Size;i++)
+			{
+				 
+			printf("\r\n");
+			printf("%03d 0x%02X",i,ether_st.RX_pData[i]);
+			ether_st.RX_flag=0;
+            printf("\r\n");
+							
+			}
+            #endif
+			data=strstr((const char*)as608_usart_st.RX_pData,(const char*)str);
 			if(data)
 				return (u8*)data;	
 		}
 	}
 	return 0;
 }
+
+static u16 AS608_WaitReceive(u16 waittime,u8 **pRecData)
+{
+    as608_usart_st.RX_flag=0;
+	while(--waittime)
+	{
+		HAL_Delay(1);
+		if(as608_usart_st.RX_flag==1)//接收到一次数据
+		{
+		   as608_usart_st.RX_flag=0;
+		   *pRecData=as608_usart_st.RX_pData;
+		}
+	}
+	return as608_usart_st.RX_Size;
+}
+
 //录入图像 PS_GetImage
 //功能:探测手指，探测到后录入指纹图像存于ImageBuffer。 
 //模块返回确认字
@@ -369,7 +438,7 @@ u8 PS_WriteReg(u8 RegNum,u8 DATA)
 u8 PS_ReadSysPara(SysPara *p)
 {
 	u16 temp;
-  u8  ensure;
+  u8  ensure=0;
 	u8  *data;
 	SendHead();
 	SendAddr();
@@ -558,10 +627,10 @@ u8 PS_ValidTempleteNum(u16 *ValidN)
 	
 	if(ensure==0x00)
 	{
-	//	printf("\r\n有效指纹个数=%d",(data[10]<<8)+data[11]);
+		printf("\r\n有效指纹个数=%d",(data[10]<<8)+data[11]);
 	}
 	else
-	//	printf("\r\n%s",EnsureMessage(ensure));
+		printf("\r\n%s",EnsureMessage(ensure));
 	return ensure;
 }
 //与AS608握手 PS_HandShake
@@ -575,27 +644,27 @@ u8 PS_HandShake(u32 *PS_Addr)
 	MYUSART_SendData(0X00);
 	MYUSART_SendData(0X00);	
 	HAL_Delay(200);
-	if(AS608_USART_ST.RX_flag==1)//接收到数据
+	if(as608_usart_st.RX_flag==1)//接收到数据
 	{		
 		
-//		  printf("ether_st.RX_Size=%d\r\n",ether_st.RX_Size);
-//		  for(uint16_t i=0;i<ether_st.RX_Size;i++)
+//		  printf("ether_st.RX_Size=%d\r\n",as608_usart_st.RX_Size);
+//		  for(uint16_t i=0;i<as608_usart_st.RX_Size;i++)
 //		{
 //			
-//			  printf("ether_st.RX_Size[%d]=%02x\r\n",i,ether_st.RX_pData[i]);
+//			  printf("ether_st.RX_Size[%d]=%02x\r\n",i,as608_usart_st.RX_pData[i]);
 //		}
 		if(//判断是不是模块返回的应答包				
-					AS608_USART_ST.RX_pData[0]==0XEF
-				&&AS608_USART_ST.RX_pData[1]==0X01
-				&&AS608_USART_ST.RX_pData[6]==0X07
+					as608_usart_st.RX_pData[0]==0XEF
+				&&as608_usart_st.RX_pData[1]==0X01
+				&&as608_usart_st.RX_pData[6]==0X07
 			)
 			{
-				*PS_Addr=(AS608_USART_ST.RX_pData[2]<<24) + (AS608_USART_ST.RX_pData[3]<<16)
-								+(AS608_USART_ST.RX_pData[4]<<8) + (AS608_USART_ST.RX_pData[5]);
-			AS608_USART_ST.RX_flag=0;
+				*PS_Addr=(as608_usart_st.RX_pData[2]<<24) + (as608_usart_st.RX_pData[3]<<16)
+								+(as608_usart_st.RX_pData[4]<<8) + (as608_usart_st.RX_pData[5]);
+			as608_usart_st.RX_flag=0;
 				return 0;
 			}
-			AS608_USART_ST.RX_flag=0;					
+			as608_usart_st.RX_flag=0;					
 	}
 	return 1;		
 }
@@ -661,7 +730,7 @@ const char *EnsureMessage(u8 ensure)
 //显示确认码错误信息
 void ShowErrMessage(u8 ensure)
 {
-  printf("ensure=%d\r\n",ensure);
+  printf("ShowErrMessage =%d\r\n",ensure);
 }
 //读出模板 PS_LoadChar 
 //功能说明： 将 flash 数据库中指定 ID 号的指纹模板读入到模板缓冲 
@@ -693,6 +762,64 @@ u8 PS_LoadChar(u8 BufferID,u16 PageID)
 		ensure=0xff;
 	return ensure;		
 }
+
+
+static u8 AS806_ExtractChar(u8 *pRecv,u16 pRecvSize,u8 *pFgchar,u16 *u16FgLength)
+{
+  char *pSegData;
+  u16 u16Offset = 0;
+  AS608_DATA_S stRecv;
+
+  printf("AS806_ExtractChar %d\r\n",pRecvSize);
+
+  pSegData = (char *)pRecv;
+  stRecv.stHeader.u16Header = 0x01EF; //大小端
+  stRecv.pData = pFgchar;
+ // AS608_DebugPrintf(pSegData,pRecvSize-u16Offset);
+  while((pSegData = strstr((const char *)pSegData , (const char *)&stRecv.stHeader.u16Header ))!=NULL){
+   
+    stRecv.stHeader.u8Flag = pSegData[6];
+		stRecv.stHeader.u16Length = pSegData[8];
+    printf("u16Length %d\r\n",stRecv.stHeader.u16Length);
+    if(stRecv.stHeader.u8Flag==0x02||stRecv.stHeader.u8Flag==0x08){
+			
+     //提取有效指纹数据
+       memcpy(&stRecv.pData[u16Offset],&pSegData[9],stRecv.stHeader.u16Length-2); //除掉校验位
+       u16Offset = u16Offset+stRecv.stHeader.u16Length-2;
+    }
+	pSegData = pSegData + sizeof(AS608_DATA_HEAD_S) + stRecv.stHeader.u16Length -3; //跳过该段所有数据
+//	AS608_DebugPrintf(pSegData,pRecvSize-u16Offset);
+  }
+  memset(pRecv,0,pRecvSize); //清空Recv内存，防止下一次数据对比错误
+  *u16FgLength = u16Offset;
+  //AS608_DebugPrintf(pFgchar,*u16FgLength);  
+  return 0;
+}
+
+
+static u8 AS806_ExportInChar(u8 *pFgchar,u16 *pFgLength)
+{
+   u16 u16FgLenTem =0;
+   u16 u16PkgCnt =0;
+   u16FgLenTem = *pFgLength;
+  
+   while(u16FgLenTem>0){
+   
+      if(u16FgLenTem>0x80){ //传输包
+        SendLengthData(2, &pFgchar[u16PkgCnt*0x80] , 0x80);
+        u16PkgCnt++;
+        u16FgLenTem = u16FgLenTem - 0x80;
+        printf("u16FgLenTem %d\r\n",u16FgLenTem);
+      }else{ //结束包
+        SendLengthData(8, &pFgchar[u16PkgCnt*0x80] , u16FgLenTem);
+        printf("u16PkgCnt %d\r\n",u16PkgCnt);
+        u16FgLenTem = 0;
+      } 
+   }
+  return 0;
+}
+
+
 //上传特征或模板 PS_UpChar 
 //功能说明： 将特征缓冲区中的特征文件上传给上位机 
 //输入参数： BufferID(缓冲区号) 
@@ -700,7 +827,7 @@ u8 PS_LoadChar(u8 BufferID,u16 PageID)
 // 指令代码： 08H 
 // 指令包格式：
 
-u8 PS_UpChar(u8 BufferID)
+u8 PS_UpChar(u8 BufferID,u8 *pFgchar , u16 *pLength)
 {
 	u16 temp;
   u8  ensure=0; 
@@ -713,11 +840,10 @@ u8 PS_UpChar(u8 BufferID)
 	MYUSART_SendData(BufferID);
 	temp = 0x01+0x04+0x08+BufferID;
 	SendCheck(temp);
-//	data=JudgeStr(2000);
-//	if(data)
-//		ensure=data[9];
-//	else
-//		ensure=0xff;
+	temp=AS608_WaitReceive(2000,&data);
+    //提取指纹特征值
+    AS806_ExtractChar(data,temp,pFgchar,pLength);
+
 	return ensure;		
 } 
 
@@ -726,7 +852,7 @@ u8 PS_UpChar(u8 BufferID)
 // 输入参数： BufferID(缓冲区号) 
 // 返回参数： 确认字 
 // 指令代码： 09H
-u8 PS_DownChar(u8 BufferID)
+u8 PS_DownChar(u8 BufferID,u8 *pFgchar , u16 *pLength)
 {
 	u16 temp;
   u8  ensure; 
@@ -740,8 +866,10 @@ u8 PS_DownChar(u8 BufferID)
 	temp = 0x01+0x04+0x09+BufferID;
 	SendCheck(temp);
 	data=JudgeStr(2000);
-	if(data)
+	if(data){
 		ensure=data[9];
+        AS806_ExportInChar(pFgchar,pLength); //向指纹模块发送特征值
+	}
 	else
 		ensure=0xff;
 	return ensure;		

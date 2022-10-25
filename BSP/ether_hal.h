@@ -5,7 +5,7 @@
 #include "main.h"
 
 
-#define  data_len  100
+#define  eth_data_len  1024
 
 typedef struct
 {
@@ -13,9 +13,10 @@ typedef struct
     uint16_t RX_Size;          //receive length
 	  uint16_t count;
     uint16_t tem_RX_Size;          //receive length
-    uint8_t  RX_pData[data_len];
+    uint8_t  RX_pData[eth_data_len];
 
 }ETH_TYPE;
+
 extern ETH_TYPE  ether_st;
 void send_string_to_eth(uint8_t *p,uint16_t plen);
 uint8_t eth_init(void);
