@@ -9,7 +9,7 @@
 #define      Touch_Pwr_Pin              TP_POW_EN_Pin
 
 uint8_t Add_FR(uint16_t shouid);	//
-void Del_FR(void);	//
+void Del_FR(uint16_t num);	//
 uint8_t  press_FR(uint16_t *pageid);
 void ShowErrMessage(uint8_t ensure);//
 

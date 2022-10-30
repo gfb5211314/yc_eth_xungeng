@@ -38,7 +38,14 @@ typedef enum  {
 //typedef enum  {
 //  
 //} System_Music_Type;
-
+typedef enum{
+	 WRITE_ONE_ZHIWEN=0U,   //写入指纹
+	 EXPORT_OUT_ONE_ZHIWEN=1,  //导出指纹
+	 DEL_ONE_ZHIWEN=2,     //删除单个指纹
+   DEL_ALL_ZHIWEN=3,     //删除所有指纹
+	 ZHIWEN_IDLE 
+}zhiwen_cur_num;
+extern zhiwen_cur_num zhiwen_cur;
 extern System_Music_Type   System_Music;
 extern void Play_Music_Fun(void);
 extern void Talk_Process_Fun(void);

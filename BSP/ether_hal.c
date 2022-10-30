@@ -48,7 +48,7 @@ void eth_send_string(uint8_t *p) {
 
 void send_string_to_eth(uint8_t *p,uint16_t plen)
 {
-	 HAL_UART_Transmit(&eth_usart, p,plen, 0xffffffff);
+	  HAL_UART_Transmit(&eth_usart, p,plen, 0xffffffff);
 	
 }
 //只可以用于AT命令发送，字符为0，没有问题! 数据里面有零都不行
@@ -62,7 +62,7 @@ uint8_t atk_eth_send_cmd(uint8_t *cmd,uint8_t *ack,uint32_t waittime)
 		 {
 			 //进入发送状态
 			 case 0 : 
-				            eth_send_string(cmd);
+				                  eth_send_string(cmd);
 //		  __HAL_UART_ENABLE_IT(&eth_usart, UART_IT_IDLE);
 		  HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData, 50);//放在这里最好
 			                    comumtate=1; 
@@ -109,7 +109,7 @@ uint8_t atk_eth_send_cmd(uint8_t *cmd,uint8_t *ack,uint32_t waittime)
 void  ETH_DMA_START()
 {
 	   __HAL_UART_ENABLE_IT(&eth_usart, UART_IT_IDLE);
-     HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData,100);  //不能启动打开
+     HAL_UART_Receive_DMA(&eth_usart,(uint8_t *)ether_st.RX_pData,1000);  //不能启动打开
 
 }
 void Eth_Init()

@@ -12,7 +12,7 @@ u16 ValidN;
 u8** kbd_tbl;
 
 uint8_t Add_FR(uint16_t shouid);	//
-void Del_FR(void);	//
+void Del_FR(uint16_t num);	//
 uint8_t  press_FR(uint16_t *pageid);
 void ShowErrMessage(u8 ensure);//
 void AS608_load_keyboard(u16 x,u16 y,u8 **kbtbl);//
@@ -254,7 +254,7 @@ uint8_t  press_FR(uint16_t *pageid)
 			else 
 				 if(ensure==0x09)
 				 {
-					 		 state=0;
+					 		 state=2;
 //			      Line_1A_WT588S(6);//没有找到指纹
 //		            HAL_Delay(2000);
 			//		printf("没有搜索到指纹\r\n");//搜索指纹成功	
@@ -264,6 +264,12 @@ uint8_t  press_FR(uint16_t *pageid)
 		else
 			ShowErrMessage(ensure);
 //	    HAL_Delay(500);//延时后清除显示
+	}
+	else
+	{
+		
+		state=0;
+		
 	}
 	  return  	state;
 }
@@ -290,10 +296,10 @@ void check_zhiwen_nomal()
 	
 }
 //删除指纹
-void Del_FR(void)
+void Del_FR(uint16_t num)
 {
 	u8  ensure;
-	u16 num;
+
  
 	printf("显示删除指纹");//显示删除指纹
 	printf("Input ID and touch Enter!");//显示输入ID并按下“Enter”

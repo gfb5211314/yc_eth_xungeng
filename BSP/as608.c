@@ -140,7 +140,7 @@ static void SendLengthData(u8 u8Type,u8 *pData,u16 u16Len)
     }
 
     u16CheckSum = u8Type+u16Len+2+u16CheckSum;
-    printf("u8Type 0x%02X u16Len %d u16CheckSum 0x%04X\r\n",u8Type,u16Len,u16CheckSum);
+//    printf("u8Type 0x%02X u16Len %d u16CheckSum 0x%04X\r\n",u8Type,u16Len,u16CheckSum);
     SendCheck(u16CheckSum);
 
 

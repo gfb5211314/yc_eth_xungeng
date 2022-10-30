@@ -14,9 +14,14 @@
 #define  Equipment_run_state_function     0x08  //设备状态上报
  
 //业务
-#define  CARD_DAKA_CMD                0x09
-#define  ZHIWEN_DAKA_CMD              0x10
-#define  XINTIAO_CMD                   0x12
+#define  CARD_DAKA_CMD                  0x09
+#define  ZHIWEN_DAKA_CMD                0x10
+#define  XINTIAO_CMD                    0x12
+
+#define  ALL_UPDATA_ZHIWEN_CMD          0x20
+#define  ONE_UPDATA_ZHIWEN_CMD          0x21
+#define  ZHIWEN_DATA_CMD                0x22
+#define  ZHIWEN_UPDATA_FISNISH_CMD      0x23
 
 
 uint8_t eth_ring_com_pack(uint8_t *rxpbuf,uint8_t *dev_buf,uint8_t function,uint8_t *eth_data,uint16_t pbuf_len,uint8_t *proctukey);
@@ -76,6 +81,11 @@ typedef struct
     uint8_t id_buf[2];          //receive length
 	  uint8_t zhiwendaka_buf[4];          //receive length
 	  uint8_t xintiao_buf[1];
+	  uint8_t all_updata_zhiwen_data[1];  //全部更新数据
+	  uint8_t one_updata_zhiwen_data[1];  //一个更新
+	  uint8_t zhiwen_data_updata[1];
+   	uint8_t zhiwen_data_updata_finish[1];
+		uint8_t zhiwen_data_one_size[768];
 }COM_DATA_TYPE;
 extern  COM_DATA_TYPE   com_data;
 

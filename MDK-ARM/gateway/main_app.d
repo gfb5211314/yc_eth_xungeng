@@ -46,3 +46,5 @@ gateway\main_app.o: ..\BSP\net_com.h
 gateway\main_app.o: ..\BSP\speak_hal.h
 gateway\main_app.o: ../Inc/GPIO.h
 gateway\main_app.o: ..\BSP\rc522_app.h
+gateway\main_app.o: ..\BSP\as608.h
+gateway\main_app.o: ../Inc/usart.h

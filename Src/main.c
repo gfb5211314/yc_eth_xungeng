@@ -57,7 +57,13 @@ void System_Tick_Count()
 		{
 			uwTick--;
 			system_tick++;
-			
+			if(system_tick%100==0)   Eth_business_Cammand_Task();  //业务指令应答
+		  if(system_tick%1==0)     Play_Music_Fun();     //播放音乐
+		  if(system_tick%100==1)   Eth_Com_Data_Process_hal(); //业务处理
+			if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
+	  	if(system_tick%50==1) 	 Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
+			if((system_tick%10)==1)  Updata_ZhiWen_Data();   //操作指纹模组
+      if((system_tick%50)==1)  Time_out_Ack_fun();   //超时
 		}
 }
 /* USER CODE END PM */
@@ -186,17 +192,19 @@ int main(void)
   while (1)
   {
     /* USER CODE END WHILE */
-  // Add_FR(1);
+    // Add_FR(1);
     /* USER CODE BEGIN 3 */
-	
-		if(system_tick%1==0)  Play_Music_Fun();     //播放音乐
+	/*
+		
 		if(system_tick%100==0)  Eth_business_Cammand_Task();  //业务发送命令函数  与服务器通信	
 		if(system_tick%10==2)  Eth_Updata_Finger_Cammand_Task();  //与指纹通信		
    	if(system_tick%10==5)    Eth_Com_Data_Process(); //与服务器通信
 		if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
 	  if((system_tick%1000)==1)  Time_out_Ack_fun();
   	 System_Tick_Count();
-
+		*/
+		
+	        	System_Tick_Count();
   }
   /* USER CODE END 3 */
 }
