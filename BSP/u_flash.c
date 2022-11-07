@@ -128,7 +128,7 @@ void process_usart_data()
 		{
 			
            factory=1;			
-			Flash_Write_Num_Word(ADDR_FLASH_PAGE_512,(uint32_t *)&factory, 1 );
+			Flash_Write_Num_Word(ADDR_FLASH_PAGE_511,(uint32_t *)&factory, 1 );
 			send_string_to_eth(ether_st.RX_pData,ether_st.RX_Size);
 		}
 		ether_st.RX_flag=0;

@@ -41,7 +41,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.00.1"
+#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.01.2"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -57,13 +57,13 @@ void System_Tick_Count()
 		{
 			uwTick--;
 			system_tick++;
-			if(system_tick%100==0)   Eth_business_Cammand_Task();  //业务指令应答
-		  if(system_tick%1==0)     Play_Music_Fun();     //播放音乐
-		  if(system_tick%100==1)   Eth_Com_Data_Process_hal(); //业务处理
-			if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
-	  	if(system_tick%50==1) 	 Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
+			if(system_tick%50==0)   Eth_business_Cammand_Task();  //业务指令应答
+		  if(system_tick%10==0)     Play_Music_Fun();     //播放音乐
+		  if(system_tick%50==1)   Eth_Com_Data_Process_hal(); //业务处理
+			if(system_tick%50==2)    Talk_Process_Fun(); //业务处理
+	  	if(system_tick%50==3) 	 Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
 			if((system_tick%10)==1)  Updata_ZhiWen_Data();   //操作指纹模组
-      if((system_tick%50)==1)  Time_out_Ack_fun();   //超时
+      if((system_tick%50)==4)  Time_out_Ack_fun();   //超时
 		}
 }
 /* USER CODE END PM */

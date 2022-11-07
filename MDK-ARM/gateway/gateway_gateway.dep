@@ -1,6 +1,6 @@
 Dependencies for Project 'gateway', Target 'gateway': (DO NOT MODIFY !)
 F (startup_stm32l051xx.s)(0x6353F08C)(--cpu Cortex-M0+ --pd "__EVAL SETA 1" -g --apcs=interwork --pd "__MICROLIB SETA 1"-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include--pd "__UVISION_VERSION SETA 527" --pd "_RTE_ SETA 1" --pd "STM32L051xx SETA 1"--list startup_stm32l051xx.lst --xref -o gateway\startup_stm32l051xx.o --depend gateway\startup_stm32l051xx.d)
-F (..\Src\main_app.c)(0x635E21F0)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\main_app.o --omf_browse gateway\main_app.crf --depend gateway\main_app.d)
+F (..\Src\main_app.c)(0x63688113)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\main_app.o --omf_browse gateway\main_app.crf --depend gateway\main_app.d)
 I (..\Src\main_app.h)(0x635DF0E6)
 I (..\BSP\SX127X_Driver.h)(0x5EA54335)
 I (d:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x599ECD2E)
@@ -43,13 +43,13 @@ I (../Inc/main.h)(0x635166D5)
 I (d:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
 I (..\BSP\ether_hal.h)(0x6353F056)
 I (..\BSP\stm_flash.h)(0x5FCD9807)
-I (..\BSP\net_com.h)(0x635DECEB)
+I (..\BSP\net_com.h)(0x63688113)
 I (..\BSP\speak_hal.h)(0x6353EDB9)
 I (../Inc/GPIO.h)(0x635156AD)
 I (..\BSP\rc522_app.h)(0x634E5BDD)
 I (..\BSP\as608.h)(0x63500F28)
 I (../Inc/usart.h)(0x635156AE)
-F (../Src/main.c)(0x635E1C79)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\main.o --omf_browse gateway\main.crf --depend gateway\main.d)
+F (../Src/main.c)(0x636882C1)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\main.o --omf_browse gateway\main.crf --depend gateway\main.d)
 I (../Inc/main.h)(0x635166D5)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h)(0x5E68AD5D)
 I (../Inc/stm32l0xx_hal_conf.h)(0x635156B0)
@@ -97,7 +97,7 @@ I (d:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (d:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
 I (..\BSP\stm_flash.h)(0x5FCD9807)
 I (..\BSP\u_init.h)(0x6353E929)
-I (..\BSP\net_com.h)(0x635DECEB)
+I (..\BSP\net_com.h)(0x63688113)
 F (../Src/gpio.c)(0x63537DA2)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\gpio.o --omf_browse gateway\gpio.crf --depend gateway\gpio.d)
 I (../Inc/gpio.h)(0x635156AD)
 I (../Inc/main.h)(0x635166D5)
@@ -1036,7 +1036,7 @@ I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim.h)(0x5E68AD5D)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_tim_ex.h)(0x5E68AD5D)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h)(0x5E68AD5D)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h)(0x5E68AD5D)
-F (..\BSP\DEBUG_USART_HAL.c)(0x635E1A21)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\debug_usart_hal.o --omf_browse gateway\debug_usart_hal.crf --depend gateway\debug_usart_hal.d)
+F (..\BSP\DEBUG_USART_HAL.c)(0x63687925)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\debug_usart_hal.o --omf_browse gateway\debug_usart_hal.crf --depend gateway\debug_usart_hal.d)
 I (..\BSP\debug_usart_hal.h)(0x5EA6704D)
 I (../Inc/usart.h)(0x635156AE)
 I (../Inc/main.h)(0x635166D5)
@@ -1339,8 +1339,8 @@ I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h)(0x5E68AD5D)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h)(0x5E68AD5D)
 I (d:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (../Inc/spi.h)(0x635156AF)
-F (..\BSP\net_com.c)(0x635DF3B3)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\net_com.o --omf_browse gateway\net_com.crf --depend gateway\net_com.d)
-I (..\BSP\net_com.h)(0x635DECEB)
+F (..\BSP\net_com.c)(0x63687AEC)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\net_com.o --omf_browse gateway\net_com.crf --depend gateway\net_com.d)
+I (..\BSP\net_com.h)(0x63688113)
 I (../Inc/main.h)(0x635166D5)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h)(0x5E68AD5D)
 I (../Inc/stm32l0xx_hal_conf.h)(0x635156B0)
@@ -1387,7 +1387,7 @@ I (../Inc/GPIO.h)(0x635156AD)
 I (..\Src\main_app.h)(0x635DF0E6)
 I (..\BSP\ether_hal.h)(0x6353F056)
 I (d:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-F (..\BSP\u_flash.c)(0x635014B8)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\u_flash.o --omf_browse gateway\u_flash.crf --depend gateway\u_flash.d)
+F (..\BSP\u_flash.c)(0x6369012A)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\u_flash.o --omf_browse gateway\u_flash.crf --depend gateway\u_flash.d)
 I (..\BSP\u_flash.h)(0x634E5B90)
 I (../Inc/main.h)(0x635166D5)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h)(0x5E68AD5D)
@@ -1424,9 +1424,9 @@ I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h)(0x5E68AD5D)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h)(0x5E68AD5D)
 I (d:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x599ECD2C)
 I (d:\Keil_v5\ARM\ARMCC\include\string.h)(0x599ECD2C)
-I (..\BSP\net_com.h)(0x635DECEB)
+I (..\BSP\net_com.h)(0x63688113)
 I (..\BSP\ether_hal.h)(0x6353F056)
-F (..\BSP\u_init.c)(0x635E1506)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\u_init.o --omf_browse gateway\u_init.crf --depend gateway\u_init.d)
+F (..\BSP\u_init.c)(0x636877FA)(--c99 -c --cpu Cortex-M0+ -D__EVAL -D__MICROLIB -g -O3 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc -I ../Drivers/STM32L0xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L0xx/Include -I ../Drivers/CMSIS/Include -I ..\BSP -I ..\BSP -I ..\BSP -I ..\Src-I.\RTE\_gateway-ID:\keilpack\ARM\CMSIS\5.5.1\CMSIS\Core\Include-ID:\keilpack\Keil\STM32L0xx_DFP\2.0.1\Drivers\CMSIS\Device\ST\STM32L0xx\Include-D__UVISION_VERSION="527" -D_RTE_ -DSTM32L051xx -DUSE_HAL_DRIVER -DSTM32L051xx-o gateway\u_init.o --omf_browse gateway\u_init.crf --depend gateway\u_init.d)
 I (..\BSP\u_init.h)(0x6353E929)
 I (../Inc/main.h)(0x635166D5)
 I (../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal.h)(0x5E68AD5D)

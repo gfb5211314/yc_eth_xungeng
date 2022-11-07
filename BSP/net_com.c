@@ -350,7 +350,7 @@ void Eth_business_Cammand_Task()
 			 break;
 		 case DEV_XINTIAO :
 			 xintiao_count++;
-			    if((xintiao_count>2000)&&(System_state==WORKING))
+			    if((xintiao_count>20)&&(System_state==WORKING))
 					{
 						xintiao_count=0;
 			 temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,XINTIAO_CMD,com_data.xintiao_buf,sizeof(com_data.xintiao_buf),product_key);

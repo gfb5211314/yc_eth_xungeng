@@ -18,6 +18,9 @@
 #define  ZHIWEN_DAKA_CMD                0x10
 #define  XINTIAO_CMD                    0x12
 
+//“Ù∆µ
+#define  VOICE_MUTE_CMD                 0x40
+
 #define  ALL_UPDATA_ZHIWEN_CMD          0x20
 #define  ONE_UPDATA_ZHIWEN_CMD          0x21
 #define  ZHIWEN_DATA_CMD                0x22

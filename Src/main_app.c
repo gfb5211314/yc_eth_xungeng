@@ -259,6 +259,12 @@ void Eth_Com_Data_Process_hal()
 										              Zhiwen_flow=UPDATA_DATA_FISNISH;  
 										         
 										break;
+													 //æ≤“Ù
+										  case VOICE_MUTE_CMD :
+												   
+											      	Line_1A_WT588S(ether_st.RX_pData[28]);
+				                       send_string_to_eth(ether_st.RX_pData,ether_st.RX_Size);        
+									  break;
 								}
 					 
 					 
