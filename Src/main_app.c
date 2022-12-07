@@ -111,14 +111,57 @@ void Play_Music_Fun()
 				System_Music=MUTE_VOICE;
 				break;
 		}	
-}	
-
-
-
-//业务状态机
+}
 uint16_t zhiwenid_temp;
 uint8_t zhiwenid_temp_state=0;
  extern COM_DATA_TYPE   com_data;
+uint8_t  test_tim_count=0;
+
+void Test_Dev_Code()
+{
+    while(1)
+{
+  if(rc522_find_card(com_data.card_buf))         //读卡 或者指纹
+									{
+										//	System_Music=DIDI;
+										   											
+                       	Line_1A_WT588S(DIDI);
+                  										
+                           HAL_Delay(500);
+																		
+									}
+									zhiwenid_temp_state=press_FR(&zhiwenid_temp);
+				         	  if(zhiwenid_temp_state==1)         //找到指纹
+									{
+										//	System_Music=DIDI;
+										  com_data.id_buf[0]=zhiwenid_temp>>8;
+											com_data.id_buf[1]=zhiwenid_temp;
+										printf(" com_data.id_buf[0]=%d", com_data.id_buf[0]);
+										printf(" com_data.id_buf[1]=%d", com_data.id_buf[1]);
+                       	Line_1A_WT588S(DIDI);                 										
+                           HAL_Delay(500);
+										
+                       										
+									}	else if	(zhiwenid_temp_state==2)
+									{
+										  	Line_1A_WT588S(FINGER_PRINTS_NOT_RECORDED);                 										
+                           HAL_Delay(500);
+									    
+										
+										
+									}
+				                  HAL_Delay(500);   
+									   test_tim_count++;
+									  if(test_tim_count>20)
+										{
+											test_tim_count=0;
+											break;
+										}
+	}
+}
+//业务状态机
+
+
 void Talk_Process_Fun()
 {
 	 
@@ -126,8 +169,7 @@ void Talk_Process_Fun()
 			{
 				//配置模式
 				case CONFIG  :
-					
-				
+					  
 				break;
 					
 				case DEV_NET_IN : 
@@ -192,7 +234,9 @@ void Eth_Com_Data_Process_hal()
 			 {
 		//		 	printf("ZHIWEN_DATA_CMD1");
 				 //判断包头包尾
-				 if((ether_st.RX_pData[20]==Manufacturer_ID_1)&&(ether_st.RX_pData[21]==Manufacturer_ID_2)&&(ether_st.RX_pData[24]==device_type))
+				 if((ether_st.RX_pData[20]==Manufacturer_ID_1)&&(ether_st.RX_pData[21]==Manufacturer_ID_2)&&
+					 (ether_st.RX_pData[22]==com_data.dev_buffer[0])&& (ether_st.RX_pData[23]==com_data.dev_buffer[1])
+				 &&(ether_st.RX_pData[24]==device_type))
 				 {
 		//			 	printf("ZHIWEN_DATA_CMD2");
 					      switch(ether_st.RX_pData[25])
@@ -238,6 +282,10 @@ void Eth_Com_Data_Process_hal()
 										 case ONE_UPDATA_ZHIWEN_CMD :
 										       
 										                zhiwen_cur=DEL_ONE_ZHIWEN;
+										               for(uint16_t i=0;i<2;i++)
+										           {
+											              com_data.id_buf[i]=ether_st.RX_pData[28+i];
+										           }
 										         
 										break;
 											case ZHIWEN_DATA_CMD :
@@ -293,7 +341,7 @@ void Updata_ZhiWen_Data()
 			      System_Music=FINGER_PRINT_WRITE_SUCCESS;
 			//发送应答给服务器
 		//	状态机
-			       
+			        com_data.zhiwen_data_updata[0]=0x01;
 	         	  zhiwen_cur=ZHIWEN_IDLE;
 			        Zhiwen_flow=ZHIWEN_DATA_SEND;  
 			 break;
@@ -313,9 +361,16 @@ void Updata_ZhiWen_Data()
 		       	ensure=PS_Empty();//清空指纹库
              	if(ensure==0)
 	         {	
+						 com_data.all_updata_zhiwen_data[0]=0x01;
 		    printf("Delete All_fingerprint success!!!");//全部删除指纹成功		
 	         }
+					 else
+					 {
+						 com_data.all_updata_zhiwen_data[0]=0x00;
+						 
+					 }
 		//	状态机
+					 
 	    	    Zhiwen_flow   =	UPDATA_ALL_ZHIWEN;
 			        	  zhiwen_cur=ZHIWEN_IDLE;
 			 break;

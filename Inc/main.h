@@ -37,7 +37,7 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define  ETH_XUNGENG_PRODUCT         "98nA659a"
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

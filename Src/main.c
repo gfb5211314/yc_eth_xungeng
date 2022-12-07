@@ -41,7 +41,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.01.2"
+#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.02"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/

@@ -42,6 +42,8 @@ void User_Driver_Init()
 	    Eth_Init();   //网口初始化
 	                  //音频初始化
 	   AS608_Init();  //指纹初始化
+	   Test_Dev_Code();
 	   Init_Dev_Param();
 	   Tick_count_Reset(); //任务时间清零
+	   Param_Init();
 }

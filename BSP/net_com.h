@@ -85,7 +85,7 @@ typedef struct
 	  uint8_t zhiwendaka_buf[4];          //receive length
 	  uint8_t xintiao_buf[1];
 	  uint8_t all_updata_zhiwen_data[1];  //全部更新数据
-	  uint8_t one_updata_zhiwen_data[1];  //一个更新
+	  uint8_t one_updata_zhiwen_data[2];  //一个更新
 	  uint8_t zhiwen_data_updata[1];
    	uint8_t zhiwen_data_updata_finish[1];
 		uint8_t zhiwen_data_one_size[768];

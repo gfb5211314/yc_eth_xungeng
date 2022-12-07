@@ -78,6 +78,13 @@ ETH_ring_TYPE eth_ring;
 
 uint8_t product_key[8]={0,0,0,0,0,0,0,1};
 uint8_t sn_code[12]={0xaa,0,0,0,0,0,0,0,0,0,0,88};
+
+
+void Param_Init()
+{
+		 memcpy(product_key, ETH_XUNGENG_PRODUCT,   sizeof(ETH_XUNGENG_PRODUCT) );
+	
+}
 uint8_t eth_ring_com_pack(uint8_t *rxpbuf,uint8_t *dev_buf,uint8_t function,uint8_t *eth_data,uint16_t pbuf_len,uint8_t *proctukey)
 {
 	  uint16_t index=0;
@@ -307,12 +314,12 @@ void Eth_Updata_Finger_Cammand_Task()
 			   
 			 break;
 		 case UPDATA_ONE_ZHIWEN:
-			  temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,ONE_UPDATA_ZHIWEN_CMD,com_data.one_updata_zhiwen_data,sizeof(com_data.one_updata_zhiwen_data),product_key);
+			  temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,ONE_UPDATA_ZHIWEN_CMD,com_data.id_buf,sizeof(com_data.id_buf),product_key);
 	       send_string_to_eth(eth_ring.TX_pData,temp_data_len); 	
           Zhiwen_flow=IDLE_ZHIWEN;
 			 break;
 		 case ZHIWEN_DATA_SEND :
-			 		  temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,ZHIWEN_DATA_CMD,com_data.zhiwen_data_updata,sizeof(com_data.zhiwen_data_updata),product_key);
+			 		  temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,ZHIWEN_DATA_CMD,com_data.id_buf,sizeof(com_data.id_buf),product_key);
 	       send_string_to_eth(eth_ring.TX_pData,temp_data_len); 	
           Zhiwen_flow=IDLE_ZHIWEN;
 			 break;
@@ -350,7 +357,7 @@ void Eth_business_Cammand_Task()
 			 break;
 		 case DEV_XINTIAO :
 			 xintiao_count++;
-			    if((xintiao_count>20)&&(System_state==WORKING))
+			    if((xintiao_count>500)&&(System_state==WORKING))
 					{
 						xintiao_count=0;
 			 temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,XINTIAO_CMD,com_data.xintiao_buf,sizeof(com_data.xintiao_buf),product_key);
