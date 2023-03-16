@@ -861,7 +861,7 @@ u8 PS_DownChar(u8 BufferID,u8 *pFgchar , u16 *pLength)
 	SendAddr();
 	SendFlag(0x01);//命令包标识
 	SendLength(0x04);
-	Sendcmd(0x09);
+	Sendcmd(0x09); //从上位机下载一个特征文件到特征缓冲区
 	MYUSART_SendData(BufferID);
 	temp = 0x01+0x04+0x09+BufferID;
 	SendCheck(temp);

@@ -13,7 +13,7 @@
 #include "string.h"
 
   COM_DATA_TYPE   com_data;
- net_in_flow  dev_net_in=Access_request;
+   net_in_flow  dev_net_in=Access_request;
     Zhiwen_flow_enum     Zhiwen_flow=IDLE_ZHIWEN;
     Business_flow_enum   Business_flow;
  ETH_ACK_TYPE  eth_ack;
@@ -149,7 +149,7 @@ uint8_t  eth_ring_net_in()
 									{
 										
 										   ether_st.RX_pData[i]=ether_st.RX_pData[i+20];
-											 printf("ether_st.RX_pData[%d]=%02x.",i,	ether_st.RX_pData[i]);
+										//	 printf("ether_st.RX_pData[%d]=%02x.",i,	ether_st.RX_pData[i]);
 										
 									}
 									//测试返回的消息
@@ -157,26 +157,32 @@ uint8_t  eth_ring_net_in()
 					
 								     if(ether_st.RX_pData[4]==device_type)
 									   {
-											 
+ 
+                                
 										     switch(ether_st.RX_pData[5])
 												 {												
 													  case 0x01 :  
-                               Line_1A_WT588S(ACCESS_GATE_SUCCEE_ADDRESS_ASS_SUCCESS);
-                                 HAL_Delay(500);														
+                             													
 														   com_data.dev_buffer[0]=ether_st.RX_pData[8]; 
 													     com_data.dev_buffer[1]=ether_st.RX_pData[9];
-														 	 printf("get dev id %02x-%02x\r\n", com_data.dev_buffer[0],com_data.dev_buffer[1]);
+														// 	 printf("get dev id %02x-%02x\r\n", com_data.dev_buffer[0],com_data.dev_buffer[1]);
+														        eth_ack.count=0;
 								                     eth_ack.flag=0;
-																		dev_net_in =State_net; break;
+																		dev_net_in =State_net;
+														System_Music=ACCESS_GATE_SUCCEE_ADDRESS_ASS_SUCCESS;
+														  
+                            														
+														break;
 												}
 											}
 										 			 ether_st.RX_flag=0;
 										
 			                          ether_st.RX_Size=0;
 											  memset(ether_st.RX_pData, 0, sizeof(ether_st.RX_pData));	
-							  }
+							 }
 			 break;
 					case State_net :   //入网状态发送
+						
 		                    eth_ring.dev_pData_len=1;
 			                  eth_ring.dev_pData[0]=0x01;
 				temp_data_len =eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,State_net_function,eth_ring.dev_pData,eth_ring.dev_pData_len,product_key);
@@ -202,14 +208,14 @@ uint8_t  eth_ring_net_in()
 										ether_st.RX_pData[i]=ether_st.RX_pData[i+20];
 									}
 								
-								     if(ether_st.RX_pData[4]==device_type)
+								     if((ether_st.RX_pData[4]==device_type)&&(ether_st.RX_pData[2]==com_data.dev_buffer[0])&&(ether_st.RX_pData[3]==com_data.dev_buffer[1]))
 									   {
 										     switch(ether_st.RX_pData[5])
 												 {												
 													  case State_net_function :  
                                      
 																	
-														     
+														         eth_ack.count=0;
 								                    eth_ack.flag=0;
 																		dev_net_in =Equipment_report;
 														       break;
@@ -249,14 +255,14 @@ uint8_t  eth_ring_net_in()
 										ether_st.RX_pData[i]=ether_st.RX_pData[i+20];
 									}
 						
-								     if(ether_st.RX_pData[4]==device_type)
+								    if((ether_st.RX_pData[4]==device_type)&&(ether_st.RX_pData[2]==com_data.dev_buffer[0])&&(ether_st.RX_pData[3]==com_data.dev_buffer[1]))
 									   {
 										     switch(ether_st.RX_pData[5])
 												 {												
 													  case Equipment_report_function :  
                                      
 											
-														           
+														             eth_ack.count=0; 
 								                    eth_ack.flag=0;
 //																		net_in =Equipment_report;
 														        net_ta=1;
@@ -284,22 +290,47 @@ void  Time_out_Ack_fun()
 	{
  
        eth_ack.count++;
-    if( eth_ack.count>60)
+    if( eth_ack.count>80)
 		{
 				 
 			eth_ack.flag=2;
 			eth_ack.count=0;
 		}
 	}
-else
-{
+     else
+  {
 
-eth_ack.count=0;
+   eth_ack.count=0;
 
-}	
+  }	
 	
 }
 
+/* 获取时间
+ */
+uint8_t get_time_stramp(uint8_t i)
+{   
+	         static uint32_t cal_time_count=0;  
+	        uint8_t  temp_data_len=0;
+          com_data.timestamp_buf[0]=0x01;
+	            cal_time_count++;
+	       if(i==0)
+				 {
+					 temp_data_len= eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,GET_TIMESTAMP_CMD,com_data.timestamp_buf,sizeof(com_data.timestamp_buf),product_key);
+	       send_string_to_eth(eth_ring.TX_pData,temp_data_len);
+				 }
+				 else
+				 {
+	        if(cal_time_count>36000)
+					{
+						cal_time_count=0;
+	      
+				temp_data_len= eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,GET_TIMESTAMP_CMD,com_data.timestamp_buf,sizeof(com_data.timestamp_buf),product_key);
+	       send_string_to_eth(eth_ring.TX_pData,temp_data_len);
+					}
+				}
+		    return 0;
+}
 /* 更新指纹数据 
   */
 void Eth_Updata_Finger_Cammand_Task()
@@ -334,8 +365,24 @@ void Eth_Updata_Finger_Cammand_Task()
 }
 /* 业务通信
   */
+extern uint8_t net_state;  //网络状态   0 网络正常    1网络失败
+extern uint32_t net_time_count;
+extern uint8_t net_time_flag;
+
 extern uint8_t card_num[16]; //卡号缓存
 uint32_t xintiao_count=0;
+
+uint8_t temp_card[15][50];  //内存不够 
+uint8_t temp_card_index=0;
+uint8_t temp_card_data_len=0;
+uint8_t temp_card_data_count=0;
+
+
+uint8_t temp_finger[15][50]; //内存不够
+uint8_t temp_finger_index=0;
+uint8_t temp_finger_data_len=0;
+uint8_t temp_finger_data_count=0;
+
 extern System_State_Type   System_state;
 void Eth_business_Cammand_Task()
 {    
@@ -344,15 +391,68 @@ void Eth_business_Cammand_Task()
 	 {
 		 case CARD_DAKA :	
 			    //  memcpy ( eth_ring.dev_pData, const void * src, size_t num );
+		   
+			  //处理网络缓存数据
+		  if(net_state==1)  //网络异常
+	 {
+		    memcpy (com_data.card_buf+16, com_data.timestamp, sizeof(com_data.timestamp));
+       temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,AB_CARD_DAKA_CMD,com_data.card_buf,sizeof(com_data.card_buf),product_key);
+		   temp_card_data_len=temp_data_len;
+		   
+		   memcpy(temp_card[temp_card_index], eth_ring.TX_pData,temp_data_len);
+		   temp_card_index++;
+		    if(temp_card_index>14)
+			 {
+				 temp_card_index=0;
+				 
+			 }
+	 }
+	 else
+	 {
+		 
+		  memcpy (com_data.card_buf+16, com_data.timestamp, sizeof(com_data.timestamp));
        temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,CARD_DAKA_CMD,com_data.card_buf,sizeof(com_data.card_buf),product_key);
 	     send_string_to_eth(eth_ring.TX_pData,temp_data_len); 	
+		   temp_card_data_len=temp_data_len;
+		 
+		 
+	 }
           Business_flow=DEV_XINTIAO;
 			 break;
 		 case ZHIWEN_DAKA:
-			      memcpy (com_data.zhiwendaka_buf, com_data.dev_buffer, sizeof(com_data.dev_buffer));
+			     
+		 		  //处理网络缓存数据
+		  if(net_state==1)  //网络异常
+	 {
+		 
+		       memcpy (com_data.zhiwendaka_buf, com_data.dev_buffer, sizeof(com_data.dev_buffer));
 		        memcpy (com_data.zhiwendaka_buf+2, com_data.id_buf, sizeof(com_data.id_buf));
+		        memcpy (com_data.zhiwendaka_buf+4, com_data.timestamp, sizeof(com_data.timestamp));
+			 temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,AB_ZHIWEN_DAKA_CMD,com_data.zhiwendaka_buf, sizeof(com_data.zhiwendaka_buf),product_key);
+	
+		        temp_finger_data_len=temp_data_len;
+		 
+		 //
+		 memcpy(temp_finger[temp_finger_index], eth_ring.TX_pData,temp_data_len);	  
+		   temp_finger_index++;
+	     if(temp_finger_index>14)
+			 {
+				 temp_finger_index=0;
+				 
+			 }
+	 }
+	 else
+	 {
+		 
+		 
+		   memcpy (com_data.zhiwendaka_buf, com_data.dev_buffer, sizeof(com_data.dev_buffer));
+		        memcpy (com_data.zhiwendaka_buf+2, com_data.id_buf, sizeof(com_data.id_buf));
+		        memcpy (com_data.zhiwendaka_buf+4, com_data.timestamp, sizeof(com_data.timestamp));
 			 temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,ZHIWEN_DAKA_CMD,com_data.zhiwendaka_buf, sizeof(com_data.zhiwendaka_buf),product_key);
 	     send_string_to_eth(eth_ring.TX_pData,temp_data_len);
+		        temp_finger_data_len=temp_data_len;
+		 
+	 }
 		      Business_flow=DEV_XINTIAO;
 			 break;
 		 case DEV_XINTIAO :
@@ -362,92 +462,53 @@ void Eth_business_Cammand_Task()
 						xintiao_count=0;
 			 temp_data_len=eth_ring_com_pack(eth_ring.TX_pData,com_data.dev_buffer,XINTIAO_CMD,com_data.xintiao_buf,sizeof(com_data.xintiao_buf),product_key);
 	     send_string_to_eth(eth_ring.TX_pData,temp_data_len);
+						net_time_flag=1;
 					}
 			 break;
 	 
 	 }
+     if(net_state==0)  //网络通畅
+     {
+			 //处理程序发送数据
+			       if(temp_card_index>0)
+						 {
+							  HAL_Delay(10);
+			          memcpy(eth_ring.TX_pData,temp_card[temp_card_data_count],temp_card_data_len);
+							   send_string_to_eth(eth_ring.TX_pData,temp_card_data_len); 
+							   temp_card_data_count++;
+							   if(temp_card_data_count<temp_card_index)
+								 {
+									
+									 
+								 }
+								 else
+								 { 
+									  temp_card_data_count=0;
+									  temp_card_index=0;
+								 }
+								 
+						 }
+			         
+						 //
+						   if(temp_finger_index>0)
+						 {
+							  HAL_Delay(50);
+			          memcpy(eth_ring.TX_pData,temp_finger[temp_finger_data_count],temp_finger_data_len);
+							   send_string_to_eth(eth_ring.TX_pData,temp_finger_data_len); 
+							   temp_finger_data_count++;
+							   if(temp_finger_data_count<temp_finger_index)
+								 {
+									
+									 
+								 }
+								 else
+								 {
+									 temp_finger_data_count=0;
+									  temp_finger_index=0;
+								 }
+								   HAL_Delay(50);
+						 }
+			 
+		 }
 }
 
-/* 接收数据处理
-*/
-
-//void Eth_Com_Data_Process()
-//{
-//	
-//	   if((ether_st.RX_flag==1)&&(System_state==WORKING))
-//			 {
-//				 //判断包头包尾
-//				 if((ether_st.RX_pData[20]==Manufacturer_ID_1)&&(ether_st.RX_pData[21]==Manufacturer_ID_2)&&(ether_st.RX_pData[24]==device_type))
-//				 {
-//					      switch(ether_st.RX_pData[25])
-//								{
-//									case CARD_DAKA_CMD :
-//										          if(ether_st.RX_pData[28]==1)  
-//															{
-//																   printf("打卡成功\r\n");
-//																   System_Music=CARD_PUNCHED_OUT_SUCCESS; //打卡成功
-//															}
-//															else
-//															{
-//																
-//																   System_Music=CARD_NUMBER_NOT_ENTER;  //卡号没有录入
-//																
-//															}
-//										break;
-//									
-//									case ZHIWEN_DAKA_CMD :
-//										break;
-//									case XINTIAO_CMD :
-//										break;
-//									
-//								}
-//					 
-//					 
-//				 }
-//				    ether_st.RX_Size=0;											
-//				    ether_st.RX_flag=0;				
-//  	  memset(ether_st.RX_pData, 0, sizeof(ether_st.RX_pData));					 
-//			 }
-//								  
-//}
-//
-//void Eth_Com_Data_Process_hal()
-//{
-//	
-//	   if((ether_st.RX_flag==1)&&(System_state==WORKING))
-//			 {
-//				 //判断包头包尾
-//				 if((ether_st.RX_pData[20]==Manufacturer_ID_1)&&(ether_st.RX_pData[21]==Manufacturer_ID_2)&&(ether_st.RX_pData[24]==device_type))
-//				 {
-//					      switch(ether_st.RX_pData[25])
-//								{
-//									case CARD_DAKA_CMD :
-//										          if(ether_st.RX_pData[28]==1)  
-//															{
-//																   printf("打卡成功\r\n");
-//																   System_Music=CARD_PUNCHED_OUT_SUCCESS; //打卡成功
-//																
-//															}
-//															else
-//															{
-//																
-//																   System_Music=CARD_NUMBER_NOT_ENTER;  //卡号没有录入
-//																
-//															}
-//										break;
-//									
-//									case ZHIWEN_DAKA_CMD :
-//										break;
-//									case XINTIAO_CMD :
-//										break;
-//									
-//								}
-//					 
-//					 
-//				 }
-//				    ether_st.RX_Size=0;											
-//				    ether_st.RX_flag=0;				
-//  	  memset(ether_st.RX_pData, 0, sizeof(ether_st.RX_pData));					 
-//			 }
-//								  
-//}

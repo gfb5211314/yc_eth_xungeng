@@ -17,7 +17,7 @@
 #define  CARD_DAKA_CMD                  0x09
 #define  ZHIWEN_DAKA_CMD                0x10
 #define  XINTIAO_CMD                    0x12
-
+#define  GET_TIMESTAMP_CMD              0x30
 //音频
 #define  VOICE_MUTE_CMD                 0x40
 
@@ -26,13 +26,17 @@
 #define  ZHIWEN_DATA_CMD                0x22
 #define  ZHIWEN_UPDATA_FISNISH_CMD      0x23
 
+//异常卡号
+#define  AB_CARD_DAKA_CMD               0x59
+//异常指纹
+#define  AB_ZHIWEN_DAKA_CMD             0x69
 
 uint8_t eth_ring_com_pack(uint8_t *rxpbuf,uint8_t *dev_buf,uint8_t function,uint8_t *eth_data,uint16_t pbuf_len,uint8_t *proctukey);
 extern void Eth_business_Cammand_Task(void);
 extern void Eth_Updata_Finger_Cammand_Task(void);
 extern void Eth_Com_Data_Process(void);
 typedef enum{
-	 Access_request=0U,   //入网请求
+	 Access_request=1U,   //入网请求
 	 Access_request_ack,   //入网应答
 	 State_net,     //入网状态
 	 State_net_ack,   //入网状态应答
@@ -41,7 +45,7 @@ typedef enum{
 }net_in_flow;
 
 typedef enum{
-	 CARD_DAKA=0U,   //卡号打卡
+	 CARD_DAKA=1U,   //卡号打卡
 	 ZHIWEN_DAKA,   //指纹打卡
 	 DEV_XINTIAO,     //设备心跳
 
@@ -50,7 +54,7 @@ typedef enum{
 //更新指纹
 
 typedef enum{
-	 UPDATA_ALL_ZHIWEN=0U,   //更新所有指纹
+	 UPDATA_ALL_ZHIWEN=1U,   //更新所有指纹
 	 UPDATA_ONE_ZHIWEN,  //更新指纹
 	 ZHIWEN_DATA_SEND,     //指纹数据交互
 	 UPDATA_DATA_FISNISH,   //更新数据完毕
@@ -80,10 +84,12 @@ typedef struct
 typedef struct
 {
   	uint8_t   dev_buffer[2]; //设备号
-    uint8_t  card_buf[16];        //IDLE receive flag
+    uint8_t  card_buf[16+4];        //IDLE receive flag  4个是时间戳
+	  uint8_t timestamp[4];
     uint8_t id_buf[2];          //receive length
-	  uint8_t zhiwendaka_buf[4];          //receive length
+	  uint8_t zhiwendaka_buf[4+4];          //receive length 4个是时间戳
 	  uint8_t xintiao_buf[1];
+	  uint8_t timestamp_buf[1];
 	  uint8_t all_updata_zhiwen_data[1];  //全部更新数据
 	  uint8_t one_updata_zhiwen_data[2];  //一个更新
 	  uint8_t zhiwen_data_updata[1];

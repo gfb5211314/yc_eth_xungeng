@@ -116,7 +116,7 @@ void open_pwr_zhiwen()
 	  HAL_GPIO_WritePin(GPIOC, Touch_Pwr_Pin, GPIO_PIN_SET);
 	
 }
-static uint8_t zhiwen_test_buf[1024];
+//static uint8_t zhiwen_test_buf[1024];
 uint16_t zhiwen_test_len;
 uint8_t  export_out_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength);
 //录指纹
@@ -343,11 +343,25 @@ uint8_t  export_out_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength)
 }
 
 //导入指纹
-uint8_t  export_in_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength)
+//uint8_t  export_in_FR(uint16_t u16Fgid,u8 *pFgchar,u16 *pLength)
+//{
+
+//   u8 u8Ret;
+//   u8Ret=PS_DownChar(u16Fgid,pFgchar,pLength);
+//   /*
+//   if(ensure==0x00){//该is的特征存在
+//   }else{
+//    }
+//*/
+//	return 0;
+
+//}
+//导入指纹
+uint8_t  export_in_FR(u8 BufferID,u8 *pFgchar,u16 *pLength)
 {
 
    u8 u8Ret;
-   u8Ret=PS_DownChar(u16Fgid,pFgchar,pLength);
+   u8Ret=PS_DownChar(BufferID,pFgchar,pLength);
    /*
    if(ensure==0x00){//该is的特征存在
    }else{

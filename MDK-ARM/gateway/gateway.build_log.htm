@@ -22,12 +22,19 @@ Dialog DLL:      TARMCM1.DLL V1.14.1.0
  
 <h2>Project:</h2>
 F:\yichi\eth_xungeng\MDK-ARM\gateway.uvprojx
-Project File Date:  10/20/2022
+Project File Date:  12/17/2022
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 6 (build 750)', folder: 'd:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'gateway'
-"gateway\gateway.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+../Src/main.c(52): warning:  #1295-D: Deprecated declaration get_time_stramp - give arg types
+  extern uint8_t	get_time_stramp();
+../Src/main.c: 1 warning, 0 errors
+linking...
+Program Size: Code=19068 RO-data=260 RW-data=136 ZI-data=7560  
+FromELF: creating hex file...
+"gateway\gateway.axf" - 0 Error(s), 1 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -50,7 +57,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.2.0
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:02
 </pre>
 </body>
 </html>

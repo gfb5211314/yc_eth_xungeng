@@ -30,7 +30,7 @@ typedef struct
     uint16_t RX_Size;           //receive length
 	  uint16_t count;
     uint8_t  RX_pData[data_len];
-    uint8_t  TX_pData[data_len];
+ //   uint8_t  TX_pData[data_len]; //Ê¡ÄÚ´æ
 }AS608_USART_TYPE;
 extern AS608_USART_TYPE  as608_usart_st;
 void  AS608_DMA_START(void);

@@ -4,6 +4,7 @@
 #include "string.h"
 #include "net_com.h"
 #include "ether_hal.h"
+#include "iwdg.h"
 #define SN_CODE                  "YCGATE0112345"    //
 //stm32L0xx    PAGE  128BYTE     64*1024/128=512ҳ
 
@@ -73,17 +74,17 @@ void Flash_Read_Word( uint32_t ReadAddr, uint32_t *pBuffer, uint32_t NumToRead )
 		    printf("read data 0x%x OK\n", *(pBuffer+i));
 	}
 }
-uint32_t ab[2]={0x12345678,0x88997766};
-uint32_t ac[2];
-void test_flash()
-{
-	 memcpy(sn_code, SN_CODE, 12);
-	Flash_Write_Num_Word(ADDR_FLASH_PAGE_512,(uint32_t *) sn_code, 3 );
-	
-	Flash_Read_Word( ADDR_FLASH_PAGE_512, ac,3 ) ;
-	  printf("read data 0x%x OK\n", *ac);
-	 printf("read data 0x%x OK\n", *(ac+1));
-}
+//uint32_t ab[2]={0x12345678,0x88997766};
+//uint32_t ac[2];
+//void test_flash()
+//{
+//	 memcpy(sn_code, SN_CODE, 12);
+//	Flash_Write_Num_Word(ADDR_FLASH_PAGE_512,(uint32_t *) sn_code, 3 );
+//	
+//	Flash_Read_Word( ADDR_FLASH_PAGE_512, ac,3 ) ;
+//	  printf("read data 0x%x OK\n", *ac);
+//	 printf("read data 0x%x OK\n", *(ac+1));
+//}
 uint32_t factory=0;
 void Init_Dev_Param()
 {
@@ -93,8 +94,10 @@ void Init_Dev_Param()
 	    while(factory!=1)
 			{
        	process_usart_data();
+					HAL_IWDG_Refresh(&hiwdg);
 			}
 			HAL_Delay(1000);
+				HAL_IWDG_Refresh(&hiwdg);
 			HAL_Delay(1000);
 			send_string_to_eth(sn_code,12);
 }

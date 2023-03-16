@@ -480,7 +480,7 @@ char PcdReset(void)
 /////////////////////////////////////////////////////////////////////
 unsigned char ReadRawRC(unsigned char Address)
 {
-    unsigned char i, ucAddr;
+    unsigned char  ucAddr;
     unsigned char ucResult=0;
     Rc522_cs_en;
     ucAddr = ((Address<<1)&0x7E)|0x80;
@@ -742,7 +742,7 @@ char M500PcdConfigISOType(unsigned char type)
 
     return MI_OK;
 }
-void open_fird_vol();
+void open_fird_vol(void);
 void Rc522_Init()
 {  
 	  open_fird_vol(); //打开射频电源供电
@@ -772,7 +772,7 @@ void close_fird_vol()
 uint8_t rc522_find_card(uint8_t * card_buf)
 {
 
-    unsigned char status,i;
+    unsigned char status;
     unsigned int temp=0;
 	//寻卡
     	status= PcdRequest(REQ_ALL,TagType);

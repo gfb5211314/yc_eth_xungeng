@@ -11,7 +11,7 @@
 #include "rc522_app.h"
 #include "as608.h"
 //业务层
-System_State_Type   System_state=DEV_NET_IN;
+System_State_Type   System_state=DEV_NET_IN; //  DEV_NET_IN
 System_Music_Type   System_Music;
 zhiwen_cur_num      zhiwen_cur=ZHIWEN_IDLE;
 uint8_t card_num[16]; //卡号缓存
@@ -25,7 +25,7 @@ void Play_Music_Fun()
 //									{
 //					    	     Line_1A_WT588S(MUTE_VOICE);
 //									}
-				         
+				      
 					break;
 				case CLOCK_IN_SUCESS :
 					       Line_1A_WT588S(CLOCK_IN_SUCESS);
@@ -33,7 +33,7 @@ void Play_Music_Fun()
 				break;
 				case 	 CARD_NUMBER_NOT_ENTER://卡号没有录入  :
 					       Line_1A_WT588S(CARD_NUMBER_NOT_ENTER);
-				System_Music=MUTE_VOICE;
+			      	System_Music=MUTE_VOICE;
 					
 				break;
 				case  FINGER_SUCCESS_RECORDED://指纹录入成功
@@ -160,18 +160,21 @@ void Test_Dev_Code()
 	}
 }
 //业务状态机
-
-
+extern uint8_t net_state;  //网络状态
+extern	uint8_t get_time_stramp();
+uint8_t power_flag=0;
+uint8_t zhiwen_runing_flag=0;
+uint16_t power_count=0;
 void Talk_Process_Fun()
 {
 	 
      	switch(System_state)
 			{
-				//配置模式
+				//配置模式 时间
 				case CONFIG  :
-					  
+					    
 				break;
-					
+					  //入网流程
 				case DEV_NET_IN : 
 					      if(eth_ring_net_in()!=1)
 								{
@@ -180,53 +183,115 @@ void Talk_Process_Fun()
 								}
 								else
 								{
+									 get_time_stramp(0);
+									  HAL_Delay(5);
 									System_state=WORKING;
-									Business_flow=DEV_XINTIAO; //发送卡号
+									Business_flow=DEV_XINTIAO; //发送心跳包
 								}
 				
 				  break;
 				case WORKING :
 					        if(rc522_find_card(com_data.card_buf))         //读卡 或者指纹
 									{
-										//	System_Music=DIDI;
-										   
-											
                        	Line_1A_WT588S(DIDI);
                   										
                            HAL_Delay(500);
-												Business_flow=CARD_DAKA; //发送卡号		
+												Business_flow=CARD_DAKA; //发送卡号	
+                              if(net_state==1)  //网络异常
+																{
+																	 	Line_1A_WT588S(CLOCK_IN_SUCESS);	
+																}
+																else
+																{										
                        	 Line_1A_WT588S(CARD_NUM_BEING_VERIFIED);	
+																}
                            HAL_Delay(500);										
 									}
-									zhiwenid_temp_state=press_FR(&zhiwenid_temp);
-				         	  if(zhiwenid_temp_state==1)         //找到指纹
+									if(power_flag==0)
 									{
+										
+										 	if(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)) //新增
+									   {
+									  	power_flag=1;
+										 open_zhiwen_vol();//打开电源
+											 
+  									   HAL_Delay(500);
+
+									   }
+										 else if((zhiwen_cur==ZHIWEN_IDLE)&&(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)==0))
+										 {
+											 	 close_zhiwen_vol();
+										 }
+								}
+									if(power_flag==1)
+									{
+								  	zhiwenid_temp_state=press_FR(&zhiwenid_temp);
+				         	    if(zhiwenid_temp_state==1)         //找到指纹
+								   	 {
 										//	System_Music=DIDI;
 										  com_data.id_buf[0]=zhiwenid_temp>>8;
 											com_data.id_buf[1]=zhiwenid_temp;
-										printf(" com_data.id_buf[0]=%d", com_data.id_buf[0]);
-										printf(" com_data.id_buf[1]=%d", com_data.id_buf[1]);
+									//	printf(" com_data.id_buf[0]=%d", com_data.id_buf[0]);
+									//	printf(" com_data.id_buf[1]=%d", com_data.id_buf[1]);
                        	Line_1A_WT588S(DIDI);                 										
                            HAL_Delay(500);
 												Business_flow=ZHIWEN_DAKA; //发送卡号		
+										       		  if(net_state==1)  //网络异常
+																{
+																	 	Line_1A_WT588S(CLOCK_IN_SUCESS);	
+																}
+																else
+																{
                        	Line_1A_WT588S(CARD_NUM_BEING_VERIFIED);	
-                           HAL_Delay(500);										
+																}
+                           HAL_Delay(500);	
+                          power_flag=2;	
+                   															
 									}	else if	(zhiwenid_temp_state==2)
 									{
 										  	Line_1A_WT588S(FINGER_PRINTS_NOT_RECORDED);                 										
                            HAL_Delay(500);
-									    
-										
-										
+									       power_flag=2;
+																		
 									}
-								
+              	 	if(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)) //新增
+									   {
+									 
+
+									   }
+										 else if((zhiwen_cur==ZHIWEN_IDLE)&&(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)==0))
+										 {
+											    power_flag=0;
+											 	 close_zhiwen_vol();
+										 }
+								 }
+								 else if(power_flag==2)
+								 {
+									 
+									 	 	if(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)) //新增
+									   {
+									 
+
+									   }
+										 else if((zhiwen_cur==ZHIWEN_IDLE)&&(HAL_GPIO_ReadPin(TP_WKUP_GPIO_Port, TP_WKUP_Pin)==0))
+										 {
+											    power_flag=0;
+											 	 close_zhiwen_vol();
+										 }
+									 
+								 }
+
 					break;
 												
 		 }
 }
 
 
+extern uint32_t  local_timestamp;
 
+uint8_t net_state=0;  //网络状态
+uint32_t net_time_count=0;
+uint8_t net_time_flag=0;
 void Eth_Com_Data_Process_hal()
 {
 //	 	printf("ZHIWEN_DATA_CMD88");
@@ -272,15 +337,24 @@ void Eth_Com_Data_Process_hal()
 										
 										break;
 									case XINTIAO_CMD :
-										
+										           net_state=0;   //网络正常
+															net_time_flag=0; // 停止计数
 									  break;
 									 case ALL_UPDATA_ZHIWEN_CMD :
-										 
-										            
+										         //打开指纹电源
+										               zhiwen_runing_flag=1;
+									                open_zhiwen_vol();//打开电源
+											 
+  									               HAL_Delay(200);  //打开指纹电源
+									 
 										               zhiwen_cur=DEL_ALL_ZHIWEN;
 										break;
 										 case ONE_UPDATA_ZHIWEN_CMD :
-										       
+										                  //打开指纹电源
+										               zhiwen_runing_flag=1;
+									                open_zhiwen_vol();//打开电源
+											 
+  									               HAL_Delay(200);  //打开指纹电源
 										                zhiwen_cur=DEL_ONE_ZHIWEN;
 										               for(uint16_t i=0;i<2;i++)
 										           {
@@ -290,6 +364,11 @@ void Eth_Com_Data_Process_hal()
 										break;
 											case ZHIWEN_DATA_CMD :
 											 	printf("ZHIWEN_DATA_CMD1");
+											           //打开指纹电源
+										               zhiwen_runing_flag=1;
+									                open_zhiwen_vol();//打开电源
+											 
+  									               HAL_Delay(200);  //打开指纹电源
 												       for(uint16_t i=0;i<2;i++)
 										           {
 											              com_data.id_buf[i]=ether_st.RX_pData[28+i];
@@ -311,6 +390,17 @@ void Eth_Com_Data_Process_hal()
 										  case VOICE_MUTE_CMD :
 												   
 											      	Line_1A_WT588S(ether_st.RX_pData[28]);
+				                       send_string_to_eth(ether_st.RX_pData,ether_st.RX_Size);        
+									  break;
+											
+																 //时间校准
+										  case GET_TIMESTAMP_CMD :
+												   
+											      	      for(uint16_t i=0;i<4;i++)
+										           {
+											              com_data.timestamp[3-i]=ether_st.RX_pData[28+i];  //大端存储  转换为小端存储
+										           }
+													 memcpy(&local_timestamp, com_data.timestamp ,sizeof(com_data.timestamp));   //同步时间
 				                       send_string_to_eth(ether_st.RX_pData,ether_st.RX_Size);        
 									  break;
 								}
@@ -335,15 +425,16 @@ void Updata_ZhiWen_Data()
 			
 			  //写入数据到指纹
 			case WRITE_ONE_ZHIWEN :
-				        	
-           export_in_FR(zhiwenid,com_data.zhiwen_data_one_size,&zhiwen_len_temp);   		//	PS_DownChar(0,buf,&down_len); //同步指纹到指纹模组
-              PS_StoreChar(CharBuffer2,zhiwenid);//              PS_StoreChar(0,id);
+				           
+           export_in_FR(CharBuffer2,com_data.zhiwen_data_one_size,&zhiwen_len_temp);   		//	PS_DownChar(0,buf,&down_len); //同步指纹到指纹模组
+                     PS_StoreChar(CharBuffer2,zhiwenid);//              PS_StoreChar(0,id);	
 			      System_Music=FINGER_PRINT_WRITE_SUCCESS;
 			//发送应答给服务器
 		//	状态机
 			        com_data.zhiwen_data_updata[0]=0x01;
-	         	  zhiwen_cur=ZHIWEN_IDLE;
-			        Zhiwen_flow=ZHIWEN_DATA_SEND;  
+	         	
+			        Zhiwen_flow=ZHIWEN_DATA_SEND; 
+                 zhiwen_cur=ZHIWEN_IDLE;			
 			 break;
 			
 			//导出指纹
@@ -383,7 +474,7 @@ void Updata_ZhiWen_Data()
 		    printf("Delete One_fingerprint success!!!");//删除单个指纹成功		
 	         }
 		//	状态机
-	    	    Zhiwen_flow   =	UPDATA_ONE_ZHIWEN;
+	    	    Zhiwen_flow =	UPDATA_ONE_ZHIWEN;
 			         	  zhiwen_cur=ZHIWEN_IDLE;
 			 break;
 							

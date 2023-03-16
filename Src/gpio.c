@@ -64,7 +64,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pin : PtPin */
   GPIO_InitStruct.Pin = TP_WKUP_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(TP_WKUP_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pin : PtPin */
@@ -76,13 +76,20 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PAPin PAPin PAPin PAPin 
                            PAPin */
-  GPIO_InitStruct.Pin = RF_POW_EN_Pin|TP_POW_EN_Pin|SPI_NSS_Pin|WT_DAT_Pin 
+  GPIO_InitStruct.Pin = RF_POW_EN_Pin|SPI_NSS_Pin|WT_DAT_Pin 
                           |WT_LCK_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
+
+
+  GPIO_InitStruct.Pin = TP_POW_EN_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
   /*Configure GPIO pins : PBPin PBPin PBPin PBPin 
                            PBPin */
   GPIO_InitStruct.Pin = wr_Pin|iic_scl_Pin|iic_sda_Pin|eth_at_Pin 

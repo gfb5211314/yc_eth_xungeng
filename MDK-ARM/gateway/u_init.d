@@ -36,3 +36,4 @@ gateway\u_init.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart.h
 gateway\u_init.o: ../Drivers/STM32L0xx_HAL_Driver/Inc/stm32l0xx_hal_uart_ex.h
 gateway\u_init.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 gateway\u_init.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+gateway\u_init.o: ../Inc/iwdg.h

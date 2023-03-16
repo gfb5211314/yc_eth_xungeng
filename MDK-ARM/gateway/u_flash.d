@@ -38,3 +38,4 @@ gateway\u_flash.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 gateway\u_flash.o: d:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 gateway\u_flash.o: ..\BSP\net_com.h
 gateway\u_flash.o: ..\BSP\ether_hal.h
+gateway\u_flash.o: ../Inc/iwdg.h

@@ -2,6 +2,7 @@
 #include     "main.h"
 #include     "stdio.h"
 #include     "string.h"
+#include     "iwdg.h"
  extern void SystemClock_Config(void);
  extern void MX_GPIO_Init(void);
  extern void MX_DMA_Init(void);
@@ -30,7 +31,8 @@ void Bsp_Driver_Init()
   MX_SPI1_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
- //MX_IWDG_Init();
+  MX_IWDG_Init();
+	HAL_IWDG_Refresh(&hiwdg);
   MX_LPUART1_UART_Init();
   MX_NVIC_Init();
   printf("init...\r\n");
@@ -44,6 +46,6 @@ void User_Driver_Init()
 	   AS608_Init();  //指纹初始化
 	   Test_Dev_Code();
 	   Init_Dev_Param();
-	   Tick_count_Reset(); //任务时间清零
+	  Tick_count_Reset(); //任务时间清零
 	   Param_Init();
 }

@@ -41,29 +41,51 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.02"
+#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.03"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+extern void Eth_Com_Data_Process_hal(void);
+extern void Updata_ZhiWen_Data(void);
+extern void Time_out_Ack_fun(void);
+extern uint8_t	get_time_stramp();
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
 uint32_t system_tick=0;
+uint32_t system_temp_tick=0;
+uint8_t Eth_business_Cammand_flag;
+uint8_t Play_Music_Fun_flag;
+uint8_t Eth_Com_Data_Process_hal_flag;
+uint8_t	Talk_Process_Fun_flag;
+uint8_t Eth_Updata_Finger_Cammand_Task_flag;//指纹指令应答
+uint8_t	Updata_ZhiWen_Data_flag ;  //操作指纹模组
+uint8_t Time_out_Ack_fun_flag;   //超时
+uint8_t	get_time_stramp_flag;
+
+
 void System_Tick_Count()
 {
 	if(uwTick)
 		{
-			uwTick--;
+			   
+		
+		  uwTick--;
 			system_tick++;
-			if(system_tick%50==0)   Eth_business_Cammand_Task();  //业务指令应答
+      if(system_tick%100==0)   Eth_business_Cammand_Task();  //业务指令应答
 		  if(system_tick%10==0)     Play_Music_Fun();     //播放音乐
-		  if(system_tick%50==1)   Eth_Com_Data_Process_hal(); //业务处理
-			if(system_tick%50==2)    Talk_Process_Fun(); //业务处理
-	  	if(system_tick%50==3) 	 Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
+		  if(system_tick%100==1)   Eth_Com_Data_Process_hal(); //业务处理
+			if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
+	  	if(system_tick%50==1) 	 Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
 			if((system_tick%10)==1)  Updata_ZhiWen_Data();   //操作指纹模组
-      if((system_tick%50)==4)  Time_out_Ack_fun();   //超时
+      if((system_tick%50)==1)  Time_out_Ack_fun();   //超时
+		  if(system_tick%1000==6){get_time_stramp(1);get_time_stramp_flag=0;}
+		 // if((system_tick%5000)==1){System_Music=CARD_NUMBER_NOT_ENTER;}
+		
+		
+		
 		}
 }
 /* USER CODE END PM */
@@ -133,52 +155,8 @@ void u32_ip_to_u8_ip(uint8_t *ipbuf,uint32_t *ipuf,uint16_t u32_len)
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-void chuchang_check()
-{
- 
-//	  chuchang_flag=180;
-//
-	
-//    STMFLASH_Read  (0x800f510,(uint32_t*)&chuchang_flag, 1); //读是否设置好ip
-//		 printf("chuchang_flag=%d\r\n",chuchang_flag);
-//     STMFLASH_Read (  0x80400, (uint32_t* )&factory_parameter_flag, 1);
-	 
-//	STMFLASH_Read (0x800f500, (uint32_t* )u32_product_key, 2)	; //读
-//	u32_ip_to_u8_ip(product_key,u32_product_key,2);
-//    for(uint8_t i=0;i<8;i++)
-//	{
-//		printf("%02x",product_key[i]);
-//		
-//	}
 
-//	u8_ip_to_u32_ip_more(product_key,u32_product_key,2);
-//	 if(chuchang_flag==3)
-//	 {
-//		 STMFLASH_Read (  0x800f428, (uint32_t* )u32_local_eth_ip, 1)	; //本机地址
-//		 STMFLASH_Read (  0x800f448, (uint32_t* )u32_Remote_eth_ip, 1)	; //远程IP地址
-//		 STMFLASH_Read (  0x800f468, (uint32_t* )u32_Remote_eth_port, 1)	; //远程PORT地址
-////     	printf("%08x",u32_local_eth_ip[0]);
-////		 	printf("%08x",u32_Remote_eth_ip[0]);
-////		 	printf("%08x",u32_Remote_eth_port[0]);
-//  sprintf((char*)local_eth_ip,"at+LANIp=%d.%d.%d.%d\r\n",*(uint8_t *)&u32_local_eth_ip,
-//		*(((uint8_t *)&u32_local_eth_ip[0])+1),*(((uint8_t *)&u32_local_eth_ip[0])+2),*(((uint8_t *)&u32_local_eth_ip[0])+3));
-////	  printf("local_eth_ip=%s",local_eth_ip);
-//	
-//	sprintf((char*)Remote_eth_ip,"at+NDomain0=%d.%d.%d.%d\r\n",*(uint8_t *)&u32_Remote_eth_ip,
-//		*(((uint8_t *)&u32_Remote_eth_ip[0])+1),*(((uint8_t *)&u32_Remote_eth_ip[0])+2),*(((uint8_t *)&u32_Remote_eth_ip[0])+3));	
-////	  printf("Remote_eth_ip=%s",Remote_eth_ip);
-//  sprintf((char*)Remote_eth_port,"at+NRPort0=%d%d%d%d\r\n",*(uint8_t *)&u32_Remote_eth_port,
-//		*(((uint8_t *)&u32_Remote_eth_port[0])+1),*(((uint8_t *)&u32_Remote_eth_port[0])+2),*(((uint8_t *)&u32_Remote_eth_port[0])+3));	
-//// printf("Remote_eth_port=%s",Remote_eth_port); 	
-//	 }
-    
-}
-void eth_set_parameter()
-{
-	
-	  
-	 
- }
+
 /* USER CODE END 0 */
 
 /**
@@ -189,22 +167,15 @@ int main(void)
 {
   Bsp_Driver_Init();
 	User_Driver_Init();
+
   while (1)
   {
     /* USER CODE END WHILE */
     // Add_FR(1);
     /* USER CODE BEGIN 3 */
-	/*
-		
-		if(system_tick%100==0)  Eth_business_Cammand_Task();  //业务发送命令函数  与服务器通信	
-		if(system_tick%10==2)  Eth_Updata_Finger_Cammand_Task();  //与指纹通信		
-   	if(system_tick%10==5)    Eth_Com_Data_Process(); //与服务器通信
-		if(system_tick%50==1)    Talk_Process_Fun(); //业务处理
-	  if((system_tick%1000)==1)  Time_out_Ack_fun();
-  	 System_Tick_Count();
-		*/
-		
-	        	System_Tick_Count();
+//printf("123\r\n");
+		HAL_IWDG_Refresh(&hiwdg);
+	  System_Tick_Count();
   }
   /* USER CODE END 3 */
 }
@@ -269,24 +240,28 @@ void SystemClock_Config(void)
  void MX_NVIC_Init(void)
 {
   /* LPUART1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(LPUART1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(LPUART1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(LPUART1_IRQn);
   /* USART2_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(USART2_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(USART2_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(USART2_IRQn);
   /* USART1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(USART1_IRQn, 2, 0);
   HAL_NVIC_EnableIRQ(USART1_IRQn);
   /* DMA1_Channel2_3_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel2_3_IRQn, 1, 1);
   HAL_NVIC_EnableIRQ(DMA1_Channel2_3_IRQn);
   /* DMA1_Channel4_5_6_7_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Channel4_5_6_7_IRQn, 2, 1);
   HAL_NVIC_EnableIRQ(DMA1_Channel4_5_6_7_IRQn);
 }
 
 /* USER CODE BEGIN 4 */
-
+uint32_t  local_timestamp=0;
+uint32_t  local_timecount=0;
+extern uint8_t net_state;  //网络状态
+extern uint32_t net_time_count;
+extern uint8_t net_time_flag;
 /* USER CODE END 4 */
 
  /**
@@ -299,14 +274,51 @@ void SystemClock_Config(void)
   */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
+	  	system_temp_tick++;
   /* USER CODE BEGIN Callback 0 */
+	//网络检测
+  if (htim->Instance == TIM2) {
+		  if(net_time_flag==1)
+			{
+				net_time_count++;
+				 if(net_time_count>5000)  //5秒
+				 {
+					 net_time_flag=0;
+					 net_time_count=0;
+					 net_state=1; //断网
+				 }
+			}
+			else
+			{
+				
+				net_time_count=0;
+				
+			}
+		
+	}
 
+  
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM2) {
+	
+	
+	
       HAL_IncTick();
+		  local_timecount++;
+		 if(local_timecount%1000==0)  //1s +1
+		 {
+			 local_timestamp++;
+			 //大端存储
+			  com_data.timestamp[0]= local_timestamp>>24;
+			  com_data.timestamp[1]= local_timestamp>>16;
+			  com_data.timestamp[2]= local_timestamp>>8;
+			  com_data.timestamp[3]= local_timestamp;
+			 //小端存储
+			// memcpy (com_data.timestamp, &local_timestamp ,sizeof(local_timestamp));   //同步时间
+		 } 
   }
   /* USER CODE BEGIN Callback 1 */
-
+    	HAL_IWDG_Refresh(&hiwdg);
   /* USER CODE END Callback 1 */
 }
 

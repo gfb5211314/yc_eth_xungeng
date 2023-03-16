@@ -41,8 +41,8 @@ void delay_2us(ms)
 void Line_1A_WT588S(uint8_t DDATA)
 {
 	
-// HAL_GPIO_WritePin(WT_BUSY_GPIO_Port,  WT_BUSY_Pin, GPIO_PIN_SET);  //
-// HAL_GPIO_WritePin(BELL_EN_PORT,  BELL_EN_PIN, GPIO_PIN_SET);  //
+ HAL_GPIO_WritePin(WT_BUSY_GPIO_Port,  WT_BUSY_Pin, GPIO_PIN_SET);  //
+ HAL_GPIO_WritePin(BELL_EN_PORT,  BELL_EN_PIN, GPIO_PIN_SET);  //
 uint8_t S_DATA,j;
 uint8_t B_DATA; 
 S_DATA = DDATA;
