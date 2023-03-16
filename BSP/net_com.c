@@ -290,7 +290,7 @@ void  Time_out_Ack_fun()
 	{
  
        eth_ack.count++;
-    if( eth_ack.count>80)
+    if( eth_ack.count>80)//50*80=4000
 		{
 				 
 			eth_ack.flag=2;

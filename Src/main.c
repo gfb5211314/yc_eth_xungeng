@@ -41,7 +41,7 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.03"
+#define ETH_XUNGENG_VERSION        "ETH_XUNGENG_V1.03.1"
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -64,6 +64,47 @@ uint8_t Eth_Updata_Finger_Cammand_Task_flag;//指纹指令应答
 uint8_t	Updata_ZhiWen_Data_flag ;  //操作指纹模组
 uint8_t Time_out_Ack_fun_flag;   //超时
 uint8_t	get_time_stramp_flag;
+
+
+volatile uint32_t  tick_cnt=0;
+volatile uint32_t  tick_sys=0; //10ms
+volatile uint32_t  systick_count=0;
+
+void Sys_Tick_Count()
+{
+while(tick_sys==0);
+if(tick_sys)
+{
+tick_sys--;
+systick_count++;
+}
+}
+uint32_t Get_Sys_tick()
+{
+return systick_count;
+}
+void tick_clr()
+{
+systick_count=0;
+//tick_cnt=0;
+//tick_sys=0;
+}
+
+void test_task()
+{
+
+	
+	    if(Get_Sys_tick()%100==0)   Eth_business_Cammand_Task();  //业务指令应答
+		  if(Get_Sys_tick()%10==0)     Play_Music_Fun();     //播放音乐
+		  if(Get_Sys_tick()%100==1)   Eth_Com_Data_Process_hal(); //业务处理
+			if(Get_Sys_tick()%50==1)    Talk_Process_Fun(); //业务处理
+	  	if(Get_Sys_tick()%50==2) 	  Eth_Updata_Finger_Cammand_Task(); //指纹指令应答
+			if((Get_Sys_tick()%10)==1)  Updata_ZhiWen_Data();   //操作指纹模组
+      if((Get_Sys_tick()%50)==3)  Time_out_Ack_fun();   //超时
+		  if(Get_Sys_tick()%1000==0)  {get_time_stramp(1);get_time_stramp_flag=0;}
+        Sys_Tick_Count();
+
+}
 
 
 void System_Tick_Count()
@@ -301,8 +342,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM2) {
 	
-	
-	
+	    tick_cnt++;
+       if(tick_cnt==10)  //10ms为基准
+        {
+         tick_cnt=0;
+          tick_sys++;
+//systick_count++;
+       }    
+
+
       HAL_IncTick();
 		  local_timecount++;
 		 if(local_timecount%1000==0)  //1s +1
